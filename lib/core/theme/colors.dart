@@ -10,5 +10,4 @@ class ColorDark {
   static const Color dividerColor = Color(0xFF979797);
   static const Color error = Color(0xFFFF4949);
   static const Color cellItemInMonthBackground = Color(0xFF272727);
-  static const Color createNewCategoryBackground = Color(0xFF80FFD1);
 }

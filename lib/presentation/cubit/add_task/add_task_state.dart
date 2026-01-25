@@ -1,5 +1,7 @@
 part of 'add_task_cubit.dart';
 
+enum AddTaskEffect { none, invalidDate, invalidCategory }
+
 class AddTaskState extends Equatable {
   final String taskName;
   final String taskDes;
@@ -9,6 +11,8 @@ class AddTaskState extends Equatable {
   final DateTime? selectedDate;
   final TimeOfDay selectedTime;
   final int priority;
+  final int? categoryId;
+  final AddTaskEffect effect;
 
   const AddTaskState({
     this.taskName = '',
@@ -19,6 +23,8 @@ class AddTaskState extends Equatable {
     this.selectedDate,
     this.priority = 1,
     this.selectedTime = const TimeOfDay(hour: 1, minute: 0),
+    this.categoryId,
+    this.effect = AddTaskEffect.none,
   });
 
   AddTaskState copyWith({
@@ -30,6 +36,8 @@ class AddTaskState extends Equatable {
     DateTime? selectedDate,
     TimeOfDay? selectedTime,
     int? priority,
+    int? categoryId,
+    AddTaskEffect? effect
   }) {
     return AddTaskState(
       taskName: taskName ?? this.taskName,
@@ -40,6 +48,8 @@ class AddTaskState extends Equatable {
       selectedDate: selectedDate ?? this.selectedDate,
       priority: priority ?? this.priority,
       selectedTime: selectedTime ?? this.selectedTime,
+      categoryId: categoryId ?? this.categoryId,
+      effect: effect ?? this.effect
     );
   }
 
@@ -52,6 +62,8 @@ class AddTaskState extends Equatable {
     taskDes,
     priority,
     selectedDate,
-    selectedTime
+    selectedTime,
+    categoryId,
+    effect
   ];
 }

@@ -19,4 +19,6 @@ class AppConstants {
   static const String TASK_PRIORITY = "Task Priority";
   static const String CHOOSE_CATEGORY = "Choose Category";
   static const String CREATE_NEW = "Create New";
+  static const String PLEASE_SELECT_DATE = "Please select date";
+  static const String PLEASE_SELECT_CATEGORY = "Please select category";
 }

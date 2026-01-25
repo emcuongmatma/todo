@@ -11,6 +11,7 @@ class CategoryModel {
 
   CategoryEntity toEntity() {
     return CategoryEntity(
+      id: id,
       name: name,
       icon: icon,
       backgroundColor: backgroundColor

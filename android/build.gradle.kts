@@ -17,6 +17,22 @@ subprojects {
 }
 subprojects {
     project.evaluationDependsOn(":app")
+
+    val fixNamespace = Action<Project> {
+        val androidExtension = extensions.findByName("android")
+        if (androidExtension != null) {
+            val android = androidExtension as? com.android.build.gradle.BaseExtension
+            if (android?.namespace == null) {
+                android?.namespace = project.group.toString()
+            }
+        }
+    }
+
+    if (project.state.executed) {
+        fixNamespace.execute(project)
+    } else {
+        project.afterEvaluate { fixNamespace.execute(this) }
+    }
 }
 
 tasks.register<Delete>("clean") {

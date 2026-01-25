@@ -1,20 +1,20 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:todo/core/constants/app_constants.dart';
+import 'package:todo/core/constants/initial_data.dart';
 import 'package:todo/core/theme/colors.dart';
-import 'package:todo/data/models/category_model.dart';
 import 'package:todo/domain/entities/category_entity.dart';
-import 'package:todo/generated/assets.dart';
+import 'package:todo/presentation/cubit/category/category_cubit.dart';
 
 class CategoryPicker extends StatefulWidget {
-  final String? selectedCategory;
+  final int selectedCategory;
   final Function(int) onSelected;
 
   const CategoryPicker({
     super.key,
-    this.selectedCategory,
+    required this.selectedCategory,
     required this.onSelected,
   });
 
@@ -23,69 +23,19 @@ class CategoryPicker extends StatefulWidget {
 }
 
 class _CategoryPickerState extends State<CategoryPicker> {
-  final List<CategoryEntity> categories = [
-    // CategoryModel(
-    //   name: "Grocery",
-    //   icon: Assets.iconsIcGrocery,
-    //   backgroundColor: "#CCFF80",
-    // ),
-    // CategoryModel(
-    //   name: "Work",
-    //   icon: Assets.iconsIcWork,
-    //   backgroundColor: "#FF9680",
-    // ),
-    // CategoryModel(
-    //   name: "Sport",
-    //   icon: Assets.iconsIcSport,
-    //   backgroundColor: "#80FFFF",
-    // ),
-    // CategoryModel(
-    //   name: "Design",
-    //   icon: Assets.iconsIcDesign,
-    //   backgroundColor: "#80FFD9",
-    // ),
-    // CategoryModel(
-    //   name: "University",
-    //   icon: Assets.iconsIcUniversity,
-    //   backgroundColor: "#809CFF",
-    // ),
-    // CategoryModel(
-    //   name: "Social",
-    //   icon: Assets.iconsIcSocial,
-    //   backgroundColor: "#FF80EB",
-    // ),
-    // CategoryModel(
-    //   name: "Music",
-    //   icon: Assets.iconsIcMusic,
-    //   backgroundColor: "#FC80FF",
-    // ),
-    // CategoryModel(
-    //   name: "Health",
-    //   icon: Assets.iconsIcHealth,
-    //   backgroundColor: "#80FFA3",
-    // ),
-    // CategoryModel(
-    //   name: "Movie",
-    //   icon: Assets.iconsIcMovie,
-    //   backgroundColor: "#80D1FF",
-    // ),
-    // CategoryModel(
-    //   name: "Home",
-    //   icon: Assets.iconsIcHome1,
-    //   backgroundColor: "#FF8080",
-    // ),
-  ];
-
-  late String selectedCategory;
+  late int selectedCategory;
 
   @override
   void initState() {
     super.initState();
-    selectedCategory = widget.selectedCategory ?? "Grocery";
+    selectedCategory = widget.selectedCategory;
   }
 
   @override
   Widget build(BuildContext context) {
+    final categories = context.select(
+      (CategoryCubit cubit) => cubit.state.categories,
+    );
     return GridView.builder(
       shrinkWrap: true,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -97,67 +47,74 @@ class _CategoryPickerState extends State<CategoryPicker> {
       itemBuilder: (context, index) {
         if (index < categories.length) {
           final item = categories[index];
-          return Column(
-            spacing: 5,
-            children: [
-              InkWell(
-                onTap: () {
-                  setState(() {
-                    selectedCategory = item.name;
-                  });
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: CategoryEntity.hexToColor(item.backgroundColor),
-                    borderRadius: const BorderRadiusGeometry.all(
-                      Radius.circular(4),
-                    ),
-                    border: BoxBorder.all(
-                      color: selectedCategory == item.name
-                          ? ColorDark.primary
-                          : Colors.transparent,
-                      width: 4
-                    ),
-                  ),
-                  child: SvgPicture.asset(item.icon),
-                ),
-              ),
-              Text(item.name, style: Theme.of(context).textTheme.titleSmall),
-            ],
+          return CategoryItem(
+            item: item,
+            isSelected: selectedCategory == item.id,
+            onClick: () {
+              setState(() {
+                selectedCategory = item.id;
+              });
+              widget.onSelected(item.id);
+            },
           );
-        } else {}
-        return Column(
-          spacing: 5,
-          children: [
-            InkWell(
-              onTap: (){},
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: const BoxDecoration(
-                  color: ColorDark.createNewCategoryBackground,
-                  borderRadius: BorderRadiusGeometry.all(Radius.circular(4)),
-                ),
-                child: SvgPicture.asset(Assets.iconsIcCreate),
-              ),
-            ),
-            Text(
-              AppConstants.CREATE_NEW,
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-          ],
-        );
+        } else {
+          return CategoryItem(
+            item: InitialData.createCategoryItem,
+            isSelected: false,
+            onClick: () {}
+          );
+        }
       },
     );
   }
 }
 
-Future<String?> showCategoryPicker(
+class CategoryItem extends StatelessWidget {
+  final CategoryEntity item;
+  final bool isSelected;
+  final VoidCallback onClick;
+
+  const CategoryItem({
+    super.key,
+    required this.item,
+    required this.isSelected,
+    required this.onClick,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      spacing: 5,
+      children: [
+        InkWell(
+          onTap: onClick,
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: CategoryEntity.hexToColor(item.backgroundColor),
+              borderRadius: const BorderRadiusGeometry.all(Radius.circular(4)),
+              border: BoxBorder.all(
+                      color: isSelected
+                          ? ColorDark.primary
+                          : Colors.transparent,
+                      width: 4,
+                    ),
+            ),
+            child: SvgPicture.asset(item.icon),
+          ),
+        ),
+        Text(item.name, style: Theme.of(context).textTheme.titleSmall),
+      ],
+    );
+  }
+}
+
+Future<int?> showCategoryPicker(
   BuildContext context,
-  String initialCategory,
+  int initialCategory,
 ) async {
-  String selectedCategory = initialCategory;
-  return showDialog<String>(
+  int selectedCategory = initialCategory;
+  return showDialog<int>(
     context: context,
     barrierDismissible: false,
     builder: (context) {
@@ -179,8 +136,11 @@ Future<String?> showCategoryPicker(
               ),
               const SizedBox(height: 20),
               CategoryPicker(
-                selectedCategory: "Grocery",
-                onSelected: (index) {},
+                selectedCategory: selectedCategory,
+                onSelected: (categoryId) {
+                  selectedCategory = categoryId;
+                  debugPrint("$selectedCategory");
+                },
               ),
               const SizedBox(height: 20),
               Row(
@@ -204,7 +164,9 @@ Future<String?> showCategoryPicker(
                   Expanded(
                     child: ElevatedButton(
                       style: Theme.of(context).elevatedButtonTheme.style,
-                      onPressed: () {},
+                      onPressed: () {
+                        if (context.canPop()) context.pop(selectedCategory);
+                      },
                       child: Text(
                         AppConstants.SAVE,
                         textAlign: TextAlign.center,
