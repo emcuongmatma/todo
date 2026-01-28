@@ -128,4 +128,10 @@ flutter:
     - assets/icons/ic_university.svg
     - assets/icons/ic_sport.svg
     - assets/icons/ic_movie.svg
+    - assets/icons/ic_search.svg
+    - assets/icons/ic_reset.svg
+    - assets/icons/ic_close.svg
+    - assets/icons/ic_edit.svg
+    - assets/icons/ic_sub_task.svg
+    - assets/icons/ic_delete.svg
 

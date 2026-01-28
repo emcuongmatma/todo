@@ -42,6 +42,7 @@ class _CategoryPickerState extends State<CategoryPicker> {
         crossAxisCount: 3,
         mainAxisSpacing: 16,
         crossAxisSpacing: 16,
+        childAspectRatio: 0.9
       ),
       itemCount: categories.length + 1,
       itemBuilder: (context, index) {

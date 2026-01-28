@@ -5,6 +5,7 @@ import 'package:todo/core/router/app_router.dart';
 import 'package:todo/core/di/injection.dart' as di;
 import 'package:todo/core/theme/theme.dart';
 import 'package:todo/presentation/cubit/category/category_cubit.dart';
+import 'package:todo/presentation/cubit/task/task_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,7 +21,10 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (_) => di.locator<CategoryCubit>()..getAllCategory(),
+          create: (_) => di.sl<CategoryCubit>()..getAllCategory(),
+        ),
+        BlocProvider(
+          create: (_) => di.sl<TaskCubit>()..init(),
         ),
       ],
       child: MaterialApp.router(

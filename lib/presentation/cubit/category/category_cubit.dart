@@ -15,4 +15,10 @@ class CategoryCubit extends Cubit<CategoryState> {
     final result = await _categoryRepo.getAllCategory();
     emit(state.copyWith(categories: result));
   }
+
+  Future<CategoryEntity> getCategoryById(int id) async {
+    if (state.categories.isNotEmpty) return state.categories.where((cat) => cat.id == id).first;
+    await _categoryRepo.getAllCategory();
+    return state.categories.where((cat) => cat.id == id).first;
+  }
 }

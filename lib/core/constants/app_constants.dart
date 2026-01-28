@@ -21,4 +21,27 @@ class AppConstants {
   static const String CREATE_NEW = "Create New";
   static const String PLEASE_SELECT_DATE = "Please select date";
   static const String PLEASE_SELECT_CATEGORY = "Please select category";
+  static const String SEARCH_FOR_YOUR_TASK = "Search for your task...";
+  static const String TODAY = "Today";
+  static const String ALL_TIME = "All Time";
+  static const String YESTERDAY = "Yesterday";
+  static const String AT = "At";
+  static const String COMPLETED = "Completed";
+  static const String IN_COMPLETED = "Incompleted";
+  static const String TASK_TIME = "Task Time:";
+  static const String TASK_CATEGORY = "Task Category:";
+  static const String SUB_TASK = "Sub-Task:";
+  static const String DELETE_TASK = "Delete Task";
+  static const String EDIT_TASK = "Edit Task";
+  static const String ADD_SUB_TASK = "Add Sub-Task";
+  static const String DEFAULT = "Default";
+}
+
+class API {
+  static const BASE_URL = 'https://6969ace53a2b2151f845f24d.mockapi.io/api/v1';
+
+  // Authentication
+  static const AUTH = '$BASE_URL/users';
+  //Profile
+  static const TASK = '$BASE_URL/tasks';
 }

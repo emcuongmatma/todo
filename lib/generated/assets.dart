@@ -5,8 +5,11 @@ class Assets {
   static const String iconsIcCalendar = 'assets/icons/ic_calendar.svg';
   static const String iconsIcChevronLeft = 'assets/icons/ic_chevron_left.svg';
   static const String iconsIcChevronRight = 'assets/icons/ic_chevron_right.svg';
+  static const String iconsIcClose = 'assets/icons/ic_close.svg';
   static const String iconsIcCreate = 'assets/icons/ic_create.svg';
+  static const String iconsIcDelete = 'assets/icons/ic_delete.svg';
   static const String iconsIcDesign = 'assets/icons/ic_design.svg';
+  static const String iconsIcEdit = 'assets/icons/ic_edit.svg';
   static const String iconsIcFilter = 'assets/icons/ic_filter.svg';
   static const String iconsIcFlag = 'assets/icons/ic_flag.svg';
   static const String iconsIcFocuse = 'assets/icons/ic_focuse.svg';
@@ -17,9 +20,12 @@ class Assets {
   static const String iconsIcMovie = 'assets/icons/ic_movie.svg';
   static const String iconsIcMusic = 'assets/icons/ic_music.svg';
   static const String iconsIcProfile = 'assets/icons/ic_profile.svg';
+  static const String iconsIcReset = 'assets/icons/ic_reset.svg';
+  static const String iconsIcSearch = 'assets/icons/ic_search.svg';
   static const String iconsIcSend = 'assets/icons/ic_send.svg';
   static const String iconsIcSocial = 'assets/icons/ic_social.svg';
   static const String iconsIcSport = 'assets/icons/ic_sport.svg';
+  static const String iconsIcSubTask = 'assets/icons/ic_sub_task.svg';
   static const String iconsIcTag = 'assets/icons/ic_tag.svg';
   static const String iconsIcTimer = 'assets/icons/ic_timer.svg';
   static const String iconsIcUniversity = 'assets/icons/ic_university.svg';

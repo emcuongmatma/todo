@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:todo/core/constants/app_constants.dart';
 import 'package:todo/core/di/injection.dart';
 import 'package:todo/core/theme/colors.dart';
@@ -22,7 +23,7 @@ void showAddTaskSheet(BuildContext context) {
     useSafeArea: true,
     builder: (context) {
       return BlocProvider(
-        create: (context) => locator<AddTaskCubit>(),
+        create: (context) => sl<AddTaskCubit>(),
         child: const AddTaskBottomSheet(),
       );
     },
@@ -45,6 +46,10 @@ class AddTaskBottomSheet extends StatelessWidget {
           case AddTaskEffect.invalidCategory:
             showToast(msg: AppConstants.PLEASE_SELECT_CATEGORY);
             context.read<AddTaskCubit>().clearEffect();
+          case AddTaskEffect.success:
+            if(context.canPop()) {
+              context.pop();
+            }
         }
       },
       builder: (context, state) {
@@ -188,3 +193,5 @@ class AddTaskBottomSheet extends StatelessWidget {
     );
   }
 }
+
+

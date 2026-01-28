@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:todo/core/theme/colors.dart';
+import 'package:todo/generated/assets.dart';
 
 class CustomTextField extends StatelessWidget {
   final String hintText;
   final String? errorText;
-  final Function(String) onChange;
+  final bool? isSearchBar;
+  final Function(String)? onChange;
+  final TextEditingController? controller;
 
   const CustomTextField({
     super.key,
     required this.onChange,
     required this.hintText,
     this.errorText,
+    this.isSearchBar,
+    this.controller,
   });
 
   @override
@@ -21,8 +27,16 @@ class CustomTextField extends StatelessWidget {
         fontSize: 18,
         color: ColorDark.whiteFocus,
       ),
-      onChanged: onChange,
+      controller: controller,
+      textAlignVertical: TextAlignVertical.center,
+      onChanged: (value) => onChange?.call(value),
       decoration: InputDecoration(
+        prefixIcon: isSearchBar == true
+            ? Padding(
+                padding: const EdgeInsets.all(12),
+                child: SvgPicture.asset(Assets.iconsIcSearch),
+              )
+            : null,
         hintText: hintText,
         hintStyle: Theme.of(
           context,

@@ -2,12 +2,13 @@ import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:todo/core/constants/initial_data.dart';
 import 'package:todo/data/models/category_model.dart';
+import 'package:todo/data/models/task_model.dart';
 
 class IsarService {
   static Future<Isar> init() async {
     final dir = await getApplicationDocumentsDirectory();
     final isar = await Isar.open(
-      [CategoryModelSchema],
+      [TaskModelSchema,CategoryModelSchema],
       directory: dir.path,
     );
     await _seedInitialData(isar);

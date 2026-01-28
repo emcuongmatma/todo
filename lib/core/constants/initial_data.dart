@@ -1,4 +1,5 @@
 import 'package:todo/core/constants/app_constants.dart';
+import 'package:todo/core/constants/key.dart';
 import 'package:todo/domain/entities/category_entity.dart';
 import 'package:todo/generated/assets.dart';
 
@@ -74,4 +75,24 @@ class InitialData {
         icon: Assets.iconsIcCreate,
         backgroundColor: "#80FFD1",
       );
+  static List<MenuItem> get menuItem1 => [
+    MenuItem(AppKey.TODAY, AppConstants.TODAY),
+    MenuItem(AppKey.ALL, AppConstants.ALL_TIME),
+  ];
+
+  static List<MenuItem> get menuItem2 => [
+    MenuItem(AppKey.COMPLETED, AppConstants.COMPLETED),
+    MenuItem(
+      AppKey.IN_COMPLETED,
+      AppConstants.IN_COMPLETED,
+    ),
+  ];
+}
+
+
+class MenuItem {
+  final String key;
+  final String name;
+
+  MenuItem(this.key, this.name);
 }

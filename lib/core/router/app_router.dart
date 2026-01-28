@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:todo/core/constants/routes.dart';
+import 'package:todo/domain/entities/task_entity.dart';
 import 'package:todo/presentation/pages/home/calendar_screen.dart';
 import 'package:todo/presentation/pages/home/focuse_screen.dart';
-import 'package:todo/presentation/pages/home/index_screen.dart';
+import 'package:todo/presentation/pages/home/index_screen/index_screen.dart';
 import 'package:todo/presentation/pages/home/profile_screen.dart';
+import 'package:todo/presentation/pages/home/task_detail_screen/task_detail_screen.dart';
 import 'package:todo/presentation/pages/main_wrapper.dart';
 
 class AppRouter {
@@ -23,6 +25,7 @@ class AppRouter {
           StatefulShellBranch(
             routes: [
               GoRoute(
+                name: AppRouteName.HOME_ROUTE_NAME,
                 path: AppRoutePath.HOME_ROUTE_PATH,
                 builder: (context, state) => const IndexScreen(),
               ),
@@ -32,6 +35,7 @@ class AppRouter {
           StatefulShellBranch(
             routes: [
               GoRoute(
+                name: AppRouteName.CALENDAR_ROUTE_NAME,
                 path: AppRoutePath.CALENDAR_ROUTE_PATH,
                 builder: (context, state) => const CalendarScreen(),
               ),
@@ -41,6 +45,7 @@ class AppRouter {
           StatefulShellBranch(
             routes: [
               GoRoute(
+                name: AppRouteName.FOCUSE_ROUTE_NAME,
                 path: AppRoutePath.FOCUSE_ROUTE_PATH,
                 builder: (context, state) => const FocuseScreen(),
               ),
@@ -50,12 +55,22 @@ class AppRouter {
           StatefulShellBranch(
             routes: [
               GoRoute(
+                name: AppRouteName.PROFILE_ROUTE_NAME,
                 path: AppRoutePath.PROFILE_ROUTE_PATH,
                 builder: (context, state) => const ProfileScreen(),
               ),
             ],
           ),
         ],
+      ),
+      GoRoute(
+        name: AppRouteName.TASK_DETAIL_ROUTE_NAME,
+        path: AppRoutePath.TASK_DETAIL_ROUTE_PATH,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (BuildContext context, GoRouterState state) {
+          final task = state.extra as TaskEntity;
+          return TaskDetailScreen(initialTask: task);
+        },
       ),
     ],
   );

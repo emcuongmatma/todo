@@ -20,6 +20,7 @@ class CategoryModel {
 
   static CategoryModel fromEntity(CategoryEntity entity) {
     return CategoryModel()
+      ..id = entity.id
       ..name = entity.name
       ..icon = entity.icon
       ..backgroundColor = entity.backgroundColor;
