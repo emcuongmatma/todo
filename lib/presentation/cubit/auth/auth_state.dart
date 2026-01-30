@@ -9,6 +9,7 @@ class AuthState extends Equatable {
   final NormalInput usernameInput;
   final NormalInput passwordInput;
   final NormalInput confirmPasswordInput;
+  final bool isLoading;
   final bool isValid;
   final AuthScreenEffect effect;
 
@@ -19,6 +20,7 @@ class AuthState extends Equatable {
     this.isValid = false,
     this.effect = AuthScreenEffect.none,
     this.confirmPasswordInput = const NormalInput.pure(),
+    this.isLoading = false,
   });
 
   AuthState copyWith({
@@ -30,6 +32,7 @@ class AuthState extends Equatable {
     NormalInput? passwordInput,
     NormalInput? confirmPasswordInput,
     AuthScreenEffect? effect,
+    bool? isLoading
   }) {
     return AuthState(
       status: status ?? this.status,
@@ -38,6 +41,7 @@ class AuthState extends Equatable {
       passwordInput: passwordInput ?? this.passwordInput,
       confirmPasswordInput: confirmPasswordInput ?? this.confirmPasswordInput,
       effect: effect ?? this.effect,
+      isLoading: isLoading ?? this.isLoading
     );
   }
 
@@ -49,5 +53,6 @@ class AuthState extends Equatable {
     confirmPasswordInput,
     isValid,
     effect,
+    isLoading
   ];
 }

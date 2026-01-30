@@ -34,7 +34,8 @@ class AuthCubit extends Cubit<AuthState> {
     debugPrint(username);
     final usernameInput = NormalInput.dirty(username);
     final confirmValid = validConfirmPassword
-        ? state.confirmPasswordInput.value == state.passwordInput.value && state.confirmPasswordInput.isValid
+        ? state.confirmPasswordInput.value == state.passwordInput.value &&
+              state.confirmPasswordInput.isValid
         : true;
     emit(
       state.copyWith(
@@ -53,7 +54,8 @@ class AuthCubit extends Cubit<AuthState> {
   }) {
     final passwordInput = NormalInput.dirty(password);
     final confirmValid = validConfirmPassword
-        ? state.confirmPasswordInput.value == passwordInput.value && state.confirmPasswordInput.isValid
+        ? state.confirmPasswordInput.value == passwordInput.value &&
+              state.confirmPasswordInput.isValid
         : true;
     emit(
       state.copyWith(
@@ -87,6 +89,7 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> login() async {
+    emit(state.copyWith(isLoading: true));
     final result = await authRepository
         .login(state.usernameInput.value, state.passwordInput.value)
         .run();
@@ -99,12 +102,14 @@ class AuthCubit extends Cubit<AuthState> {
         state.copyWith(
           status: AuthenticationStatus.authenticated,
           effect: AuthScreenEffect.loginSuccess,
+          isLoading: false,
         ),
       ),
     );
   }
 
   Future<void> signUp() async {
+    emit(state.copyWith(isLoading: true));
     final result = await authRepository
         .signUp(state.usernameInput.value, state.passwordInput.value)
         .run();
@@ -115,7 +120,12 @@ class AuthCubit extends Cubit<AuthState> {
       },
       (user) {
         if (user.containsKey(AppKey.ID)) {
-          emit(state.copyWith(effect: AuthScreenEffect.signUpSuccess));
+          emit(
+            state.copyWith(
+              effect: AuthScreenEffect.signUpSuccess,
+              isLoading: false,
+            ),
+          );
         }
       },
     );
