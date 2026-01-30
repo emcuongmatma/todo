@@ -37,15 +37,30 @@ const TaskModelSchema = CollectionSchema(
       name: r'isCompleted',
       type: IsarType.bool,
     ),
-    r'priority': PropertySchema(
+    r'isSynced': PropertySchema(
       id: 4,
+      name: r'isSynced',
+      type: IsarType.bool,
+    ),
+    r'priority': PropertySchema(
+      id: 5,
       name: r'priority',
       type: IsarType.long,
     ),
+    r'serverId': PropertySchema(
+      id: 6,
+      name: r'serverId',
+      type: IsarType.string,
+    ),
     r'title': PropertySchema(
-      id: 5,
+      id: 7,
       name: r'title',
       type: IsarType.string,
+    ),
+    r'userId': PropertySchema(
+      id: 8,
+      name: r'userId',
+      type: IsarType.long,
     )
   },
   estimateSize: _taskModelEstimateSize,
@@ -53,7 +68,34 @@ const TaskModelSchema = CollectionSchema(
   deserialize: _taskModelDeserialize,
   deserializeProp: _taskModelDeserializeProp,
   idName: r'id',
-  indexes: {},
+  indexes: {
+    r'title': IndexSchema(
+      id: -7636685945352118059,
+      name: r'title',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'title',
+          type: IndexType.hash,
+          caseSensitive: true,
+        )
+      ],
+    ),
+    r'isSynced': IndexSchema(
+      id: -39763503327887510,
+      name: r'isSynced',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'isSynced',
+          type: IndexType.value,
+          caseSensitive: false,
+        )
+      ],
+    )
+  },
   links: {},
   embeddedSchemas: {},
   getId: _taskModelGetId,
@@ -69,6 +111,12 @@ int _taskModelEstimateSize(
 ) {
   var bytesCount = offsets.last;
   bytesCount += 3 + object.description.length * 3;
+  {
+    final value = object.serverId;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   bytesCount += 3 + object.title.length * 3;
   return bytesCount;
 }
@@ -83,8 +131,11 @@ void _taskModelSerialize(
   writer.writeDateTime(offsets[1], object.dateTime);
   writer.writeString(offsets[2], object.description);
   writer.writeBool(offsets[3], object.isCompleted);
-  writer.writeLong(offsets[4], object.priority);
-  writer.writeString(offsets[5], object.title);
+  writer.writeBool(offsets[4], object.isSynced);
+  writer.writeLong(offsets[5], object.priority);
+  writer.writeString(offsets[6], object.serverId);
+  writer.writeString(offsets[7], object.title);
+  writer.writeLong(offsets[8], object.userId);
 }
 
 TaskModel _taskModelDeserialize(
@@ -99,8 +150,11 @@ TaskModel _taskModelDeserialize(
   object.description = reader.readString(offsets[2]);
   object.id = id;
   object.isCompleted = reader.readBool(offsets[3]);
-  object.priority = reader.readLong(offsets[4]);
-  object.title = reader.readString(offsets[5]);
+  object.isSynced = reader.readBool(offsets[4]);
+  object.priority = reader.readLong(offsets[5]);
+  object.serverId = reader.readStringOrNull(offsets[6]);
+  object.title = reader.readString(offsets[7]);
+  object.userId = reader.readLong(offsets[8]);
   return object;
 }
 
@@ -120,9 +174,15 @@ P _taskModelDeserializeProp<P>(
     case 3:
       return (reader.readBool(offset)) as P;
     case 4:
-      return (reader.readLong(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 5:
+      return (reader.readLong(offset)) as P;
+    case 6:
+      return (reader.readStringOrNull(offset)) as P;
+    case 7:
       return (reader.readString(offset)) as P;
+    case 8:
+      return (reader.readLong(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -145,6 +205,14 @@ extension TaskModelQueryWhereSort
   QueryBuilder<TaskModel, TaskModel, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterWhere> anyIsSynced() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'isSynced'),
+      );
     });
   }
 }
@@ -213,6 +281,96 @@ extension TaskModelQueryWhere
         upper: upperId,
         includeUpper: includeUpper,
       ));
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterWhereClause> titleEqualTo(
+      String title) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'title',
+        value: [title],
+      ));
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterWhereClause> titleNotEqualTo(
+      String title) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'title',
+              lower: [],
+              upper: [title],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'title',
+              lower: [title],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'title',
+              lower: [title],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'title',
+              lower: [],
+              upper: [title],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterWhereClause> isSyncedEqualTo(
+      bool isSynced) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'isSynced',
+        value: [isSynced],
+      ));
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterWhereClause> isSyncedNotEqualTo(
+      bool isSynced) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'isSynced',
+              lower: [],
+              upper: [isSynced],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'isSynced',
+              lower: [isSynced],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'isSynced',
+              lower: [isSynced],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'isSynced',
+              lower: [],
+              upper: [isSynced],
+              includeUpper: false,
+            ));
+      }
     });
   }
 }
@@ -523,6 +681,16 @@ extension TaskModelQueryFilter
     });
   }
 
+  QueryBuilder<TaskModel, TaskModel, QAfterFilterCondition> isSyncedEqualTo(
+      bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isSynced',
+        value: value,
+      ));
+    });
+  }
+
   QueryBuilder<TaskModel, TaskModel, QAfterFilterCondition> priorityEqualTo(
       int value) {
     return QueryBuilder.apply(this, (query) {
@@ -572,6 +740,154 @@ extension TaskModelQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterFilterCondition> serverIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'serverId',
+      ));
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterFilterCondition>
+      serverIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'serverId',
+      ));
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterFilterCondition> serverIdEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'serverId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterFilterCondition> serverIdGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'serverId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterFilterCondition> serverIdLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'serverId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterFilterCondition> serverIdBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'serverId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterFilterCondition> serverIdStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'serverId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterFilterCondition> serverIdEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'serverId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterFilterCondition> serverIdContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'serverId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterFilterCondition> serverIdMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'serverId',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterFilterCondition> serverIdIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'serverId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterFilterCondition>
+      serverIdIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'serverId',
+        value: '',
       ));
     });
   }
@@ -705,6 +1021,59 @@ extension TaskModelQueryFilter
       ));
     });
   }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterFilterCondition> userIdEqualTo(
+      int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'userId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterFilterCondition> userIdGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'userId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterFilterCondition> userIdLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'userId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterFilterCondition> userIdBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'userId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
 }
 
 extension TaskModelQueryObject
@@ -762,6 +1131,18 @@ extension TaskModelQuerySortBy on QueryBuilder<TaskModel, TaskModel, QSortBy> {
     });
   }
 
+  QueryBuilder<TaskModel, TaskModel, QAfterSortBy> sortByIsSynced() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isSynced', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterSortBy> sortByIsSyncedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isSynced', Sort.desc);
+    });
+  }
+
   QueryBuilder<TaskModel, TaskModel, QAfterSortBy> sortByPriority() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'priority', Sort.asc);
@@ -774,6 +1155,18 @@ extension TaskModelQuerySortBy on QueryBuilder<TaskModel, TaskModel, QSortBy> {
     });
   }
 
+  QueryBuilder<TaskModel, TaskModel, QAfterSortBy> sortByServerId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'serverId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterSortBy> sortByServerIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'serverId', Sort.desc);
+    });
+  }
+
   QueryBuilder<TaskModel, TaskModel, QAfterSortBy> sortByTitle() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'title', Sort.asc);
@@ -783,6 +1176,18 @@ extension TaskModelQuerySortBy on QueryBuilder<TaskModel, TaskModel, QSortBy> {
   QueryBuilder<TaskModel, TaskModel, QAfterSortBy> sortByTitleDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'title', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterSortBy> sortByUserId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'userId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterSortBy> sortByUserIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'userId', Sort.desc);
     });
   }
 }
@@ -849,6 +1254,18 @@ extension TaskModelQuerySortThenBy
     });
   }
 
+  QueryBuilder<TaskModel, TaskModel, QAfterSortBy> thenByIsSynced() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isSynced', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterSortBy> thenByIsSyncedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isSynced', Sort.desc);
+    });
+  }
+
   QueryBuilder<TaskModel, TaskModel, QAfterSortBy> thenByPriority() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'priority', Sort.asc);
@@ -861,6 +1278,18 @@ extension TaskModelQuerySortThenBy
     });
   }
 
+  QueryBuilder<TaskModel, TaskModel, QAfterSortBy> thenByServerId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'serverId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterSortBy> thenByServerIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'serverId', Sort.desc);
+    });
+  }
+
   QueryBuilder<TaskModel, TaskModel, QAfterSortBy> thenByTitle() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'title', Sort.asc);
@@ -870,6 +1299,18 @@ extension TaskModelQuerySortThenBy
   QueryBuilder<TaskModel, TaskModel, QAfterSortBy> thenByTitleDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'title', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterSortBy> thenByUserId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'userId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QAfterSortBy> thenByUserIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'userId', Sort.desc);
     });
   }
 }
@@ -901,9 +1342,22 @@ extension TaskModelQueryWhereDistinct
     });
   }
 
+  QueryBuilder<TaskModel, TaskModel, QDistinct> distinctByIsSynced() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'isSynced');
+    });
+  }
+
   QueryBuilder<TaskModel, TaskModel, QDistinct> distinctByPriority() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'priority');
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QDistinct> distinctByServerId(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'serverId', caseSensitive: caseSensitive);
     });
   }
 
@@ -911,6 +1365,12 @@ extension TaskModelQueryWhereDistinct
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'title', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<TaskModel, TaskModel, QDistinct> distinctByUserId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'userId');
     });
   }
 }
@@ -947,15 +1407,33 @@ extension TaskModelQueryProperty
     });
   }
 
+  QueryBuilder<TaskModel, bool, QQueryOperations> isSyncedProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'isSynced');
+    });
+  }
+
   QueryBuilder<TaskModel, int, QQueryOperations> priorityProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'priority');
     });
   }
 
+  QueryBuilder<TaskModel, String?, QQueryOperations> serverIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'serverId');
+    });
+  }
+
   QueryBuilder<TaskModel, String, QQueryOperations> titleProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'title');
+    });
+  }
+
+  QueryBuilder<TaskModel, int, QQueryOperations> userIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'userId');
     });
   }
 }

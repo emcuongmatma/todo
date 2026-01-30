@@ -25,24 +25,31 @@ class MainWrapper extends StatelessWidget {
         ),
         title: Text(
           AppConstants.INDEX,
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: ColorDark.whiteFocus),
+          style: Theme
+              .of(context)
+              .textTheme
+              .bodyLarge
+              ?.copyWith(color: ColorDark.whiteFocus),
         ),
         actions: [
           GestureDetector(
-            onTap: (){},
+            onTap: () {},
             child: Padding(
               padding: const EdgeInsets.only(right: 24),
               child: CachedNetworkImage(
                 imageUrl: AppConstants.IMAGE_URL_TEST,
-                imageBuilder: (context, imageProvider) => Container(
-                  width: 42,
-                  height: 42,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
-                  ),
-                ),
-                placeholder: (context, url) => const CircularProgressIndicator(),
+                imageBuilder: (context, imageProvider) =>
+                    Container(
+                      width: 42,
+                      height: 42,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                            image: imageProvider, fit: BoxFit.cover),
+                      ),
+                    ),
+                placeholder: (context,
+                    url) => const CircularProgressIndicator(),
                 errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
             ),

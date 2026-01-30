@@ -4,6 +4,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:todo/core/router/app_router.dart';
 import 'package:todo/core/di/injection.dart' as di;
 import 'package:todo/core/theme/theme.dart';
+import 'package:todo/presentation/cubit/auth/auth_cubit.dart';
 import 'package:todo/presentation/cubit/category/category_cubit.dart';
 import 'package:todo/presentation/cubit/task/task_cubit.dart';
 
@@ -15,11 +16,15 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
+  static final _router = AppRouter.router;
   @override
   Widget build(BuildContext context) {
+
     return MultiBlocProvider(
       providers: [
+        BlocProvider(
+          create: (_) => di.sl<AuthCubit>()..init(),
+        ),
         BlocProvider(
           create: (_) => di.sl<CategoryCubit>()..getAllCategory(),
         ),
@@ -31,7 +36,7 @@ class MyApp extends StatelessWidget {
         title: 'Todo App',
         debugShowCheckedModeBanner: false,
         theme: appTheme,
-        routerConfig: AppRouter.router,
+        routerConfig: _router,
       ),
     );
   }

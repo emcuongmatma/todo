@@ -183,7 +183,7 @@ class TaskFilterSection extends StatelessWidget {
             final item = tasks[index];
             return InkWell(
               onTap: () {
-                debugPrint(item.id.toString());
+                debugPrint(item.dateTime.toString());
                 context.pushNamed(AppRouteName.TASK_DETAIL_ROUTE_NAME,extra: item);
               },
               child: Container(
@@ -201,8 +201,9 @@ class TaskFilterSection extends StatelessWidget {
                   children: [
                     //Checkbox
                     Checkbox(
-                      value: false,
+                      value: item.isCompleted,
                       shape: const CircleBorder(),
+                      visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
                       onChanged: (val) {},
                     ),
                     const SizedBox(width: 12),
@@ -215,7 +216,7 @@ class TaskFilterSection extends StatelessWidget {
                           Text(
                             item.title,
                             style: Theme.of(context).textTheme.bodyMedium,
-                            maxLines: 1,
+                            maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
                           const SizedBox(height: 6),
@@ -223,23 +224,31 @@ class TaskFilterSection extends StatelessWidget {
                           // time
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisSize: MainAxisSize.max,
                             children: [
-                              Text(
-                                item.dateTime.toCustomString(),
-                                style: Theme.of(context).textTheme.bodyMedium
-                                    ?.copyWith(
-                                      color: ColorDark.gray,
-                                      fontSize: 14,
-                                    ),
+                              Flexible(
+                                child: Text(
+                                  item.dateTime.toCustomString(),
+                                  maxLines: 2,
+                                  style: Theme.of(context).textTheme.bodyMedium
+                                      ?.copyWith(
+                                        color: ColorDark.gray,
+                                        fontSize: 14,
+                                      ),
+                                ),
                               ),
               
                               //Category & Priority
-                              Row(
-                                spacing: 12,
-                                children: [
-                                  CategoryItemBuilder(category: item.category),
-                                  PriorityItemBuilder(priority: item.priority),
-                                ],
+                              Flexible(
+                                flex: 2,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  spacing: 12,
+                                  children: [
+                                    CategoryItemBuilder(category: item.category),
+                                    PriorityItemBuilder(priority: item.priority),
+                                  ],
+                                ),
                               ),
                             ],
                           ),

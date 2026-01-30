@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
+import 'package:fpdart/fpdart.dart';
+import 'package:todo/core/error/failure.dart';
 import 'package:todo/data/datasources/local/category_local_data_source.dart';
 import 'package:todo/data/datasources/local/task_local_data_source.dart';
+import 'package:todo/data/datasources/remote/task_remote_data_source.dart';
 import 'package:todo/data/models/task_model.dart';
 import 'package:todo/domain/entities/category_entity.dart';
 import 'package:todo/domain/entities/task_entity.dart';
@@ -8,9 +11,16 @@ import 'package:todo/domain/repositories/task_repository.dart';
 
 class TaskRepositoryImpl implements TaskRepository {
   final TaskLocalDataSource _taskLocal;
+  final TaskRemoteDataSource _taskRemoteDataSource;
   final CategoryLocalDataSource _categoryLocal;
 
-  TaskRepositoryImpl({required TaskLocalDataSource taskLocal, required CategoryLocalDataSource categoryLocal}) : _categoryLocal = categoryLocal, _taskLocal = taskLocal;
+  TaskRepositoryImpl({
+    required TaskLocalDataSource taskLocal,
+    required CategoryLocalDataSource categoryLocal,
+    required TaskRemoteDataSource taskRemote,
+  }) : _categoryLocal = categoryLocal,
+       _taskRemoteDataSource = taskRemote,
+       _taskLocal = taskLocal;
 
   List<CategoryEntity> _cachedCategories = [];
 
@@ -40,32 +50,138 @@ class TaskRepositoryImpl implements TaskRepository {
           .toList();
     }
     debugPrint("filter1 $date filter2 $isCompleted");
-    yield* _taskLocal.getTaskByFilter(searchKey: searchKey,date: date, isCompleted: isCompleted).map((
-      taskModels,
-    ) {
-      return taskModels
-          .map((model) => model.toEntity(_cachedCategories))
-          .toList();
+    yield* _taskLocal
+        .getTaskByFilter(
+          searchKey: searchKey,
+          date: date,
+          isCompleted: isCompleted,
+        )
+        .map((taskModels) {
+          return taskModels
+              .map((model) => model.toEntity(_cachedCategories))
+              .toList();
+        });
+  }
+
+  @override
+  Future<void> addTask(TaskEntity task, int userId) async {
+    final model = TaskModel.fromEntity(task, userId);
+    debugPrint(model.id.toString());
+    await _taskLocal.saveTask(model);
+  }
+  //
+  // @override
+  // Future<void> deleteTask(int taskId) async {
+  //   await _taskLocal.deleteTask(taskId);
+  // }
+
+  @override
+  TaskEither<Failure, Unit> updateTask(TaskEntity? task, int userId) {
+    if (task == null) return TaskEither.left(const UnknownFailure());
+    final taskModel = TaskModel.fromEntity(task, userId)
+      ..isSynced = false;
+    return TaskEither<Failure, void>.tryCatch(
+        () async => await _taskLocal.saveTask(taskModel),
+        (error, _) => DatabaseFailure(error.toString()),
+    ).flatMap((_){
+      return TaskEither<Failure, TaskModel>.tryCatch(
+            () async => await _taskRemoteDataSource.updateTask(taskModel),
+            (error, _) => DatabaseFailure(error.toString()),
+      ).flatMap((taskResult) {
+        debugPrint("updatedCloud");
+        return TaskEither.tryCatch(() async {
+          final serverId = taskResult.serverId;
+          if (serverId != null) {
+            await _taskLocal.updateSyncStatus(
+              localId: taskResult.id,
+              serverId: serverId,
+            );
+            debugPrint("updateLocalStatus");
+          }
+          return unit;
+        }, (error, _) => NetworkFailure(error.toString()));
+      });
     });
   }
 
   @override
-  Future<void> addTask(TaskEntity task) async {
-    final model = TaskModel.fromEntity(task);
-    await _taskLocal.saveTask(model);
+  TaskEither<Failure, Unit> syncTasks(int userId) {
+    return TaskEither<Failure, List<TaskModel>>.tryCatch(
+      () async => await _taskRemoteDataSource.getAllTask(userId),
+      (error, _) => NetworkFailure(error.toString()),
+    ).flatMap((remoteTasks) {
+      debugPrint("sync task");
+      debugPrint(remoteTasks.toString());
+      return TaskEither.tryCatch(() async {
+        await _taskLocal.saveTasksFromServer(remoteTasks);
+        return unit;
+      }, (error, _) => DatabaseFailure(error.toString()));
+    });
   }
 
   @override
-  Future<void> deleteTask(int taskId) async {
-    await _taskLocal.deleteTask(taskId);
+  TaskEither<Failure, Unit> uploadPendingTasks() {
+    return TaskEither<Failure, List<TaskModel>>.tryCatch(
+      () async => await _taskLocal.getUnsyncedTasks(),
+      (error, _) => DatabaseFailure(error.toString()),
+    ).flatMap((pendingTasks) {
+      if (pendingTasks.isEmpty) return TaskEither.right(unit);
+      debugPrint(pendingTasks.toString());
+      return TaskEither.tryCatch(() async {
+        for (var task in pendingTasks) {
+          final remoteTask = await _taskRemoteDataSource.createTask(task);
+
+          await _taskLocal.updateSyncStatus(
+            localId: task.id,
+            serverId: remoteTask.serverId!,
+          );
+        }
+        return unit;
+      }, (error, _) => NetworkFailure(error.toString()));
+    });
   }
 
   @override
-  Future<void> updateTask(TaskEntity? task) async {
-    if (task == null) return;
-    debugPrint("before convert:  ${task.id.toString()}");
-    final taskModel = TaskModel.fromEntity(task);
-    debugPrint("after convert:  ${taskModel.id.toString()}");
-    await _taskLocal.updateTask(taskModel);
+  TaskEither<Failure, Unit> updateCloudTask(TaskModel task) {
+    debugPrint("updateCloudStart");
+    return TaskEither<Failure, TaskModel>.tryCatch(
+      () async => await _taskRemoteDataSource.updateTask(task),
+      (error, _) => DatabaseFailure(error.toString()),
+    ).flatMap((taskResult) {
+      debugPrint("updateCloudUpdated");
+      return TaskEither.tryCatch(() async {
+        final serverId = taskResult.serverId;
+        if (serverId != null) {
+          await _taskLocal.updateSyncStatus(
+            localId: taskResult.id,
+            serverId: serverId,
+          );
+          debugPrint("updateLocalStatus");
+        }
+        return unit;
+      }, (error, _) => NetworkFailure(error.toString()));
+    });
+  }
+
+  @override
+  TaskEither<Failure, Unit> deleteTask(TaskEntity task) {
+    final taskModel = TaskModel.fromEntity(task,-1);
+    debugPrint("updateCloudStart");
+    return TaskEither<Failure, void>.tryCatch(
+          () async => await _taskLocal.deleteTask(taskModel.id),
+          (error, _) => DatabaseFailure(error.toString()),
+    ).flatMap((_) {
+      debugPrint("updateCloudUpdated");
+      return TaskEither.tryCatch(() async {
+        final serverId = task.serverId;
+        if (serverId != null) {
+          await _taskRemoteDataSource.deleteTask(
+              serverId
+          );
+          debugPrint("updateLocalStatus");
+        }
+        return unit;
+      }, (error, _) => NetworkFailure(error.toString()));
+    });
   }
 }

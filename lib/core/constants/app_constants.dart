@@ -1,5 +1,13 @@
 class AppConstants {
   static const String LOGIN = "Login";
+  static const String USERNAME = "Username";
+  static const String PASSWORD = "Password";
+  static const String CONFIRM_PASSWORD = "Confirm Password";
+  static const String ENTER_YOUR_USERNAME = "Enter your Username";
+  static const String ENTER_YOUR_PASSWORD = "Enter your Password";
+  static const String DONT_HAVE_ACCOUNT = "Don’t have an account? ";
+  static const String ALREADY_HAVE_ACCOUNT = "Already have an account? ";
+  static const String REGISTER = "Register";
   static const String INDEX = "Index";
   static const String CALENDAR = "Calendar";
   static const String FOCUSE = "Focuse";
@@ -35,13 +43,18 @@ class AppConstants {
   static const String EDIT_TASK = "Edit Task";
   static const String ADD_SUB_TASK = "Add Sub-Task";
   static const String DEFAULT = "Default";
+  static const String UNDEFINED = "Undefined";
+  static const String TIME_OUT = "Time out!";
+  static const String NOT_RESPONSE = "Server not response";
+  static const String USERNAME_NOT_FOUND = "Username not found";
+  static const String WRONG_USERNAME_OR_PASSWORD = "Wrong username or password";
 }
 
 class API {
   static const BASE_URL = 'https://6969ace53a2b2151f845f24d.mockapi.io/api/v1';
 
   // Authentication
-  static const AUTH = '$BASE_URL/users';
+  static const AUTH = '$BASE_URL/auth';
   //Profile
   static const TASK = '$BASE_URL/tasks';
 }

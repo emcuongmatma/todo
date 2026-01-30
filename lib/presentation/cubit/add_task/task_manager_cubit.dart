@@ -2,18 +2,23 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:todo/domain/entities/task_entity.dart';
+import 'package:todo/domain/repositories/auth_repository.dart';
 import 'package:todo/domain/repositories/category_repository.dart';
 import 'package:todo/domain/repositories/task_repository.dart';
 import 'package:todo/presentation/models/normal_input.dart';
 
-part 'add_task_state.dart';
+part 'task_manager_state.dart';
 
-class AddTaskCubit extends Cubit<AddTaskState> {
+class TaskManagerCubit extends Cubit<AddTaskState> {
   final TaskRepository taskRepository;
   final CategoryRepository categoryRepository;
+  final AuthRepository authRepository;
 
-  AddTaskCubit({required this.taskRepository, required this.categoryRepository})
-    : super(const AddTaskState());
+  TaskManagerCubit({
+    required this.taskRepository,
+    required this.categoryRepository,
+    required this.authRepository,
+  }) : super(const AddTaskState());
 
   void onTaskNameChange(String taskName) {
     emit(state.copyWith(taskName: taskName));
@@ -85,7 +90,7 @@ class AddTaskCubit extends Cubit<AddTaskState> {
     DateTime? newDate,
     int? newCategoryId,
     int? newPriority,
-    bool? isCompleted
+    bool? isCompleted,
   }) async {
     final task = state.tmpTask?.copyWith(
       title: titleChange == true ? state.taskName : null,
@@ -95,7 +100,7 @@ class AddTaskCubit extends Cubit<AddTaskState> {
           ? await categoryRepository.getCategoryById(newCategoryId)
           : null,
       priority: newPriority,
-      isCompleted: isCompleted
+      isCompleted: isCompleted,
     );
     emit(state.copyWith(tmpTask: task));
   }
@@ -115,15 +120,24 @@ class AddTaskCubit extends Cubit<AddTaskState> {
     return isValid;
   }
 
-  void deleteTask(int id) {
-    if (id == -1) return;
-    taskRepository.deleteTask(id);
-    emit(state.copyWith(effect: AddTaskEffect.success));
+  Future<void> deleteTask() async {
+    final task = state.tmpTask;
+    if (task == null) return;
+    final result = await taskRepository.deleteTask(task).run();
+    result.fold(
+      (failure) => emit(state.copyWith(effect: AddTaskEffect.fail)),
+      (tasks) => emit(state.copyWith(effect: AddTaskEffect.success)),
+    );
   }
 
-  void updateTask() {
-    taskRepository.updateTask(state.tmpTask);
-    emit(state.copyWith(effect: AddTaskEffect.success));
+  Future<void> updateTask() async {
+    final userId = authRepository.getUserId();
+    if (userId == null) return;
+    final result = await taskRepository.updateTask(state.tmpTask, userId).run();
+    result.fold(
+      (failure) => emit(state.copyWith(effect: AddTaskEffect.fail)),
+      (tasks) => emit(state.copyWith(effect: AddTaskEffect.success)),
+    );
   }
 
   Future<void> validate() async {
@@ -161,8 +175,23 @@ class AddTaskCubit extends Cubit<AddTaskState> {
       priority: state.priority,
       category: category,
     );
-    taskRepository.addTask(newTask);
+    final userId = authRepository.getUserId();
+    if (userId == null) return;
+    await taskRepository.addTask(newTask, userId);
     emit(state.copyWith(effect: AddTaskEffect.success));
+    syncLocalTasksToCloud();
+  }
+
+  Future<void> syncLocalTasksToCloud() async {
+    final result = await taskRepository.uploadPendingTasks().run();
+    result.fold(
+      (failure) {
+        debugPrint(failure.message);
+      },
+      (_) {
+        debugPrint("Task synced");
+      },
+    );
   }
 
   void clearEffect() {

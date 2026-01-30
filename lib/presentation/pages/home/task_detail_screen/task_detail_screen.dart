@@ -7,7 +7,7 @@ import 'package:todo/core/di/injection.dart';
 import 'package:todo/core/theme/colors.dart';
 import 'package:todo/domain/entities/task_entity.dart';
 import 'package:todo/generated/assets.dart';
-import 'package:todo/presentation/cubit/add_task/add_task_cubit.dart';
+import 'package:todo/presentation/cubit/add_task/task_manager_cubit.dart';
 import 'package:todo/presentation/widgets/custom_calendar_dialog.dart';
 import 'package:todo/presentation/widgets/custom_tag_dialog.dart';
 import 'package:todo/presentation/widgets/custom_time_picker_dialog.dart';
@@ -16,14 +16,14 @@ import 'package:todo/presentation/widgets/task_priority_dialog.dart';
 
 class TaskDetailScreen extends StatelessWidget {
   final TaskEntity initialTask;
-
   const TaskDetailScreen({super.key, required this.initialTask});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => sl<AddTaskCubit>()..setTempTask(initialTask),
+      create: (context) => sl<TaskManagerCubit>()..setTempTask(initialTask),
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         body: SafeArea(child: TaskDetail(initialTask: initialTask)),
       ),
     );
@@ -37,7 +37,7 @@ class TaskDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AddTaskCubit, AddTaskState>(
+    return BlocConsumer<TaskManagerCubit, AddTaskState>(
       listenWhen: (previous, current) => previous.effect != current.effect,
       listener: (context, state) {
         // switch (state.effect) {
@@ -74,7 +74,7 @@ class TaskDetail extends StatelessWidget {
                   ),
                   InkWell(
                     onTap: () {
-                      context.read<AddTaskCubit>().setTempTask(initialTask);
+                      context.read<TaskManagerCubit>().setTempTask(initialTask);
                     },
                     child: SvgPicture.asset(Assets.iconsIcReset),
                   ),
@@ -93,31 +93,36 @@ class TaskDetail extends StatelessWidget {
                         value: state.tmpTask?.isCompleted,
                         shape: const CircleBorder(),
                         onChanged: (val) {
-                          context.read<AddTaskCubit>().updateTmpTask(isCompleted: val);
+                          context.read<TaskManagerCubit>().updateTmpTask(isCompleted: val);
                         },
                       ),
                     ),
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 15,
-                    children: [
-                      Text(
-                        (state.tmpTask ?? initialTask).title,
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
-                      Text(
-                        (state.tmpTask ?? initialTask).description,
-                        style: Theme.of(
-                          context,
-                        ).textTheme.bodyMedium?.copyWith(color: ColorDark.gray),
-                      ),
-                    ],
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 15,
+                      children: [
+                        Text(
+                          (state.tmpTask ?? initialTask).title,
+                          style: Theme.of(context).textTheme.bodyLarge,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Text(
+                          (state.tmpTask ?? initialTask).description,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 3,
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium?.copyWith(color: ColorDark.gray),
+                        ),
+                      ],
+                    ),
                   ),
-                  const Spacer(),
                   InkWell(
                     onTap: () async {
-                      context.read<AddTaskCubit>().preSetValue(
+                      context.read<TaskManagerCubit>().preSetValue(
                         newTaskName: (state.tmpTask ?? initialTask).title,
                         newDescription:
                             (state.tmpTask ?? initialTask).description,
@@ -130,7 +135,7 @@ class TaskDetail extends StatelessWidget {
                       );
                       if (isChanged == true) {
                         if (!context.mounted) return;
-                        context.read<AddTaskCubit>().updateTmpTask(
+                        context.read<TaskManagerCubit>().updateTmpTask(
                           titleChange: true,
                         );
                       }
@@ -163,7 +168,7 @@ class TaskDetail extends StatelessWidget {
                     ),
                   );
                   if (!context.mounted) return;
-                  context.read<AddTaskCubit>().updateTmpTask(
+                  context.read<TaskManagerCubit>().updateTmpTask(
                     newDate: selectedDate.copyWith(
                       hour: selectedTime?.hour,
                       minute: selectedTime?.minute,
@@ -183,7 +188,7 @@ class TaskDetail extends StatelessWidget {
                   );
                   if (categoryId == null) return;
                   if (!context.mounted) return;
-                  context.read<AddTaskCubit>().updateTmpTask(
+                  context.read<TaskManagerCubit>().updateTmpTask(
                     newCategoryId: categoryId,
                   );
                 },
@@ -201,7 +206,7 @@ class TaskDetail extends StatelessWidget {
                   );
                   if (priority == null) return;
                   if (!context.mounted) return;
-                  context.read<AddTaskCubit>().updateTmpTask(
+                  context.read<TaskManagerCubit>().updateTmpTask(
                     newPriority: priority,
                   );
                 },
@@ -214,7 +219,7 @@ class TaskDetail extends StatelessWidget {
               ),
               InkWell(
                 onTap: () {
-                  context.read<AddTaskCubit>().deleteTask(initialTask.id ?? -1);
+                  context.read<TaskManagerCubit>().deleteTask();
                   if (context.canPop()) context.pop();
                 },
                 child: Row(
@@ -230,13 +235,14 @@ class TaskDetail extends StatelessWidget {
                   ],
                 ),
               ),
+              const Spacer(),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   style: Theme.of(context).elevatedButtonTheme.style,
                   onPressed: () {
                     debugPrint("${state.tmpTask?.id}");
-                    context.read<AddTaskCubit>().updateTask();
+                    context.read<TaskManagerCubit>().updateTask();
                     if(context.canPop()) context.pop();
                   },
                   child: Text(

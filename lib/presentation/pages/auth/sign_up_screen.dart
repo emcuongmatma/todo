@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:todo/core/constants/app_constants.dart';
 import 'package:todo/core/constants/routes.dart';
+import 'package:todo/core/utils/toast.dart';
 import 'package:todo/presentation/cubit/add_task/task_manager_cubit.dart';
 import 'package:todo/presentation/cubit/auth/auth_cubit.dart';
 import 'package:todo/presentation/cubit/task/task_cubit.dart';
@@ -10,28 +11,40 @@ import 'package:todo/presentation/models/normal_input.dart';
 import 'package:todo/presentation/widgets/custom_text_field.dart';
 import 'package:todo/presentation/widgets/text_span_with_action.dart';
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+class SignUpScreen extends StatelessWidget {
+  const SignUpScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: null,
+      appBar: AppBar(
+          leading: GestureDetector(
+            onTap: () {
+              if (context.canPop()) context.pop();
+            },
+            child: const Padding(
+              padding: EdgeInsets.only(left: 24),
+              child: Icon(Icons.arrow_back_ios),
+            ),
+          )
+      ),
       resizeToAvoidBottomInset: false,
       body: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
           switch (state.effect) {
             case AuthScreenEffect.loginSuccess:
-              context.read<TaskCubit>().syncTasksFromServer();
-              // context.goNamed(AppRouteName.HOME_ROUTE_NAME);
+              null;
             case AuthScreenEffect.none:
-              null;
+              // TODO: Handle this case.
+              throw UnimplementedError();
             case AuthScreenEffect.wrongPassword:
-              null;
+              // TODO: Handle this case.
+              throw UnimplementedError();
             case AuthScreenEffect.signUpSuccess:
-              null;
+              debugPrint("Đăng ký thành công");
+              showToast(msg: "Đăng ký thành công", isLong: false);
+              context.read<AuthCubit>().clearEffect();
           }
-          context.read<AuthCubit>().clearEffect();
         },
         builder: (context, state) {
           return SafeArea(
@@ -40,9 +53,9 @@ class LoginScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 78),
+                  const SizedBox(height: 16),
                   Text(
-                    AppConstants.LOGIN,
+                    AppConstants.REGISTER,
                     style: Theme.of(context).textTheme.headlineLarge,
                   ),
                   const SizedBox(height: 53),
@@ -53,7 +66,7 @@ class LoginScreen extends StatelessWidget {
                   const SizedBox(height: 8),
                   CustomTextField(
                     onChange: (value) => {
-                      context.read<AuthCubit>().onUsernameChange(username:  value,validConfirmPassword: false),
+                      context.read<AuthCubit>().onUsernameChange(username:  value, validConfirmPassword: true),
                     },
                     hintText: AppConstants.ENTER_YOUR_USERNAME,
                     errorText: state.usernameInput.inputStatusText,
@@ -66,7 +79,21 @@ class LoginScreen extends StatelessWidget {
                   const SizedBox(height: 8),
                   CustomTextField(
                     onChange: (value) => {
-                      context.read<AuthCubit>().onPasswordChange(password:  value, validConfirmPassword: false),
+                      context.read<AuthCubit>().onPasswordChange(password:  value, validConfirmPassword: true),
+                    },
+                    hintText: AppConstants.ENTER_YOUR_PASSWORD,
+                    isPasswordTextField: true,
+                    errorText: state.passwordInput.inputStatusText,
+                  ),
+                  const SizedBox(height: 25),
+                  Text(
+                    AppConstants.CONFIRM_PASSWORD,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  const SizedBox(height: 8),
+                  CustomTextField(
+                    onChange: (value) => {
+                      context.read<AuthCubit>().onConfirmPasswordChange(confirmPassword:  value, validConfirmPassword: true),
                     },
                     hintText: AppConstants.ENTER_YOUR_PASSWORD,
                     isPasswordTextField: true,
@@ -78,11 +105,11 @@ class LoginScreen extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: state.isValid
                           ? () {
-                              context.read<AuthCubit>().login();
+                              context.read<AuthCubit>().signUp();
                             }
                           : null,
                       child: Text(
-                        AppConstants.LOGIN,
+                        AppConstants.REGISTER,
                         textAlign: TextAlign.center,
                         style: Theme.of(
                           context,
@@ -94,10 +121,10 @@ class LoginScreen extends StatelessWidget {
                   Align(
                     alignment: AlignmentGeometry.bottomCenter,
                     child: TextSpanWithAction(
-                      text1: AppConstants.DONT_HAVE_ACCOUNT,
-                      text2: AppConstants.REGISTER,
+                      text1: AppConstants.ALREADY_HAVE_ACCOUNT,
+                      text2: AppConstants.LOGIN,
                       onAction: () {
-                        context.pushNamed(AppRouteName.SIGNUP_ROUTE_NAME);
+                        if (context.canPop()) context.pop();
                       },
                     ),
                   ),

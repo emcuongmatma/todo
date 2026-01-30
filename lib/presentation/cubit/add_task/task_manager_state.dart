@@ -1,6 +1,6 @@
-part of 'add_task_cubit.dart';
+part of 'task_manager_cubit.dart';
 
-enum AddTaskEffect { none, invalidDate, invalidCategory, success }
+enum AddTaskEffect { none, invalidDate, invalidCategory, success, fail }
 
 class AddTaskState extends Equatable {
   final String taskName;

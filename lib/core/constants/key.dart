@@ -5,4 +5,9 @@ class AppKey{
   static const String ALL = "all";
   static const String COMPLETED = "Completed";
   static const String IN_COMPLETED = "Incompleted";
+  static const String ID = "id";
+  static const String USER_ID = "userId";
+  static const String USER_AVATAR = "avatarUrl";
+  static const String USERNAME = "username";
+  static const String PASSWORD = "password";
 }

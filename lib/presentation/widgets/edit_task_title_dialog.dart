@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:todo/core/constants/app_constants.dart';
 import 'package:todo/core/theme/colors.dart';
-import 'package:todo/presentation/cubit/add_task/add_task_cubit.dart';
+import 'package:todo/presentation/cubit/add_task/task_manager_cubit.dart';
 import 'package:todo/presentation/models/normal_input.dart';
 import 'package:todo/presentation/widgets/custom_text_field.dart';
 
@@ -12,7 +12,7 @@ Future<bool?> showEditTaskNameAndDescription({
   required String initialTaskName,
   required String initialTaskDescription,
 }) {
-  final taskCubit = context.read<AddTaskCubit>();
+  final taskCubit = context.read<TaskManagerCubit>();
   return showDialog<bool>(
     context: context,
     barrierDismissible: false,
@@ -128,7 +128,7 @@ class _TaskInputSectionState extends State<TaskInputSection> {
 
   @override
   Widget build(BuildContext context) {
-    final state = context.watch<AddTaskCubit>().state;
+    final state = context.watch<TaskManagerCubit>().state;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 14),
       child: Column(
@@ -139,12 +139,12 @@ class _TaskInputSectionState extends State<TaskInputSection> {
               ? CustomTextField(
                   controller: _taskNameController,
                   onChange: (value) =>
-                      context.read<AddTaskCubit>().onTaskNameChange(value),
+                      context.read<TaskManagerCubit>().onTaskNameChange(value),
                   hintText: AppConstants.TASK_NAME,
                   errorText: state.taskNameInput.inputStatusText,
                 )
               : InkWell(
-                  onTap: () => context.read<AddTaskCubit>().showTaskNameInput(),
+                  onTap: () => context.read<TaskManagerCubit>().showTaskNameInput(),
                   child: Text(
                     state.taskName,
                     textAlign: TextAlign.start,
@@ -156,7 +156,7 @@ class _TaskInputSectionState extends State<TaskInputSection> {
                 ),
           !state.showTaskDesTextField
               ? InkWell(
-                  onTap: () => context.read<AddTaskCubit>().onCheckTaskName(),
+                  onTap: () => context.read<TaskManagerCubit>().onCheckTaskName(),
                   child: Text(
                     state.taskDes,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -168,7 +168,7 @@ class _TaskInputSectionState extends State<TaskInputSection> {
               : CustomTextField(
                   controller: _taskDescriptionController,
                   onChange: (value) => context
-                      .read<AddTaskCubit>()
+                      .read<TaskManagerCubit>()
                       .onTaskDescriptionChange(value),
                   hintText: AppConstants.TASK_DESCRIPTION,
                   errorText: state.taskDesInput.inputStatusText,

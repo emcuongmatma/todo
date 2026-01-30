@@ -4,6 +4,7 @@ import 'package:todo/core/theme/text_theme.dart';
 
 final appTheme = ThemeData(
   scaffoldBackgroundColor: ColorDark.background,
+  canvasColor: ColorDark.background,
   splashFactory: NoSplash.splashFactory,
   highlightColor: Colors.transparent,
   colorScheme: ColorScheme.fromSeed(
@@ -41,6 +42,8 @@ final appTheme = ThemeData(
     style: ElevatedButton.styleFrom(
       backgroundColor: ColorDark.primary,
       foregroundColor: Colors.white,
+      disabledBackgroundColor: ColorDark.primary.withAlpha(128),
+      disabledForegroundColor: ColorDark.primary.withAlpha(128),
       elevation: 0,
       padding: const EdgeInsets.symmetric(vertical: 12),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),

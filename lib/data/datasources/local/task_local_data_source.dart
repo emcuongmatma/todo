@@ -47,6 +47,10 @@ class TaskLocalDataSource {
     return query.build().watch(fireImmediately: true);
   }
 
+  Future<List<TaskModel>> getUnsyncedTasks() async {
+    return _isar.taskModels.filter().isSyncedEqualTo(false).findAll();
+  }
+
   Future<void> saveTask(TaskModel task) async {
     await _isar.writeTxn(() => _isar.taskModels.put(task));
   }
@@ -55,7 +59,33 @@ class TaskLocalDataSource {
     await _isar.writeTxn(() => _isar.taskModels.delete(taskId));
   }
 
-  Future<void> updateTask(TaskModel task) async {
-    await _isar.writeTxn(() => _isar.taskModels.put(task));
+  Future<void> saveTasksFromServer(List<TaskModel> remoteTasks) async {
+    debugPrint("Datasource layer");
+    debugPrint(remoteTasks.toString());
+    await _isar.writeTxn(() async {
+      for (var task in remoteTasks) {
+        final existingTask = await _isar.taskModels
+            .filter()
+            .serverIdEqualTo(task.serverId)
+            .findFirst();
+
+        if (existingTask != null) {
+          task.id = existingTask.id;
+        }
+
+        await _isar.taskModels.put(task);
+      }
+    });
   }
+  Future<void> updateSyncStatus({required int localId, required String serverId}) async {
+    await _isar.writeTxn(() async {
+      final task = await _isar.taskModels.get(localId);
+      if (task != null) {
+        task.isSynced = true;
+        task.serverId = serverId;
+        await _isar.taskModels.put(task);
+      }
+    });
+  }
+
 }

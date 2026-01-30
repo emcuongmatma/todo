@@ -10,6 +10,7 @@ class TaskEntity {
   final int priority;
   final CategoryEntity category;
   final bool isCompleted;
+  final String? serverId;
 
   TaskEntity({
     this.id,
@@ -19,6 +20,7 @@ class TaskEntity {
     required this.priority,
     required this.category,
     this.isCompleted = false,
+    this.serverId,
   });
 
   TaskEntity copyWith({
@@ -28,6 +30,7 @@ class TaskEntity {
     int? priority,
     CategoryEntity? category,
     bool? isCompleted,
+    String? serverId
   }) {
     return TaskEntity(
       id: id,
@@ -37,6 +40,7 @@ class TaskEntity {
       priority: priority ?? this.priority,
       category: category ?? this.category,
       isCompleted: isCompleted ?? this.isCompleted,
+      serverId: serverId ?? this.serverId
     );
   }
 }

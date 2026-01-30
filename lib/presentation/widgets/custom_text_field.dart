@@ -7,6 +7,7 @@ class CustomTextField extends StatelessWidget {
   final String hintText;
   final String? errorText;
   final bool? isSearchBar;
+  final bool? isPasswordTextField;
   final Function(String)? onChange;
   final TextEditingController? controller;
 
@@ -17,6 +18,7 @@ class CustomTextField extends StatelessWidget {
     this.errorText,
     this.isSearchBar,
     this.controller,
+    this.isPasswordTextField,
   });
 
   @override
@@ -28,6 +30,7 @@ class CustomTextField extends StatelessWidget {
         color: ColorDark.whiteFocus,
       ),
       controller: controller,
+      obscureText: isPasswordTextField ?? false,
       textAlignVertical: TextAlignVertical.center,
       onChanged: (value) => onChange?.call(value),
       decoration: InputDecoration(
