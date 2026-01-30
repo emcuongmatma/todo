@@ -120,24 +120,30 @@ class TaskManagerCubit extends Cubit<AddTaskState> {
     return isValid;
   }
 
-  Future<void> deleteTask() async {
-    final task = state.tmpTask;
-    if (task == null) return;
-    final result = await taskRepository.deleteTask(task).run();
-    result.fold(
-      (failure) => emit(state.copyWith(effect: AddTaskEffect.fail)),
-      (tasks) => emit(state.copyWith(effect: AddTaskEffect.success)),
-    );
-  }
-
   Future<void> updateTask() async {
     final userId = authRepository.getUserId();
     if (userId == null) return;
     final result = await taskRepository.updateTask(state.tmpTask, userId).run();
-    result.fold(
-      (failure) => emit(state.copyWith(effect: AddTaskEffect.fail)),
-      (tasks) => emit(state.copyWith(effect: AddTaskEffect.success)),
-    );
+    result.fold((failure) => emit(state.copyWith(effect: AddTaskEffect.fail)), (
+      task,
+    ) {
+      emit(state.copyWith(effect: AddTaskEffect.success));
+      taskRepository.updateCloudTask(task).run();
+    });
+  }
+
+  Future<void> deleteTask() async {
+    final taskId = state.tmpTask?.id;
+    if (taskId == null) return;
+    final result = await taskRepository.deleteTask(taskId).run();
+    result.fold((failure) => emit(state.copyWith(effect: AddTaskEffect.fail)), (
+      _,
+    ) {
+      emit(state.copyWith(effect: AddTaskEffect.success));
+      final serverId = state.tmpTask?.serverId;
+      if (serverId == null) return;
+      taskRepository.deleteCloudTask(serverId).run();
+    });
   }
 
   Future<void> validate() async {
@@ -177,21 +183,13 @@ class TaskManagerCubit extends Cubit<AddTaskState> {
     );
     final userId = authRepository.getUserId();
     if (userId == null) return;
-    await taskRepository.addTask(newTask, userId);
-    emit(state.copyWith(effect: AddTaskEffect.success));
-    syncLocalTasksToCloud();
-  }
-
-  Future<void> syncLocalTasksToCloud() async {
-    final result = await taskRepository.uploadPendingTasks().run();
-    result.fold(
-      (failure) {
-        debugPrint(failure.message);
-      },
-      (_) {
-        debugPrint("Task synced");
-      },
-    );
+    final result = await taskRepository.addTask(newTask, userId).run();
+    result.fold((failure) => emit(state.copyWith(effect: AddTaskEffect.fail)), (
+      tasks,
+    ) {
+      emit(state.copyWith(effect: AddTaskEffect.success));
+      taskRepository.uploadPendingTasks().run();
+    });
   }
 
   void clearEffect() {

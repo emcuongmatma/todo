@@ -7,7 +7,6 @@ import 'package:todo/core/constants/key.dart';
 import 'package:todo/domain/entities/task_entity.dart';
 import 'package:todo/domain/repositories/auth_repository.dart';
 import 'package:todo/domain/repositories/task_repository.dart';
-import 'package:todo/presentation/cubit/auth/auth_cubit.dart';
 
 part 'task_state.dart';
 
