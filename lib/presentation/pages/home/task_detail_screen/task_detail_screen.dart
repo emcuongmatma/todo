@@ -11,6 +11,7 @@ import 'package:todo/presentation/cubit/add_task/task_manager_cubit.dart';
 import 'package:todo/presentation/widgets/custom_calendar_dialog.dart';
 import 'package:todo/presentation/widgets/custom_tag_dialog.dart';
 import 'package:todo/presentation/widgets/custom_time_picker_dialog.dart';
+import 'package:todo/presentation/widgets/delete_task_dialog.dart';
 import 'package:todo/presentation/widgets/edit_task_title_dialog.dart';
 import 'package:todo/presentation/widgets/task_priority_dialog.dart';
 
@@ -218,7 +219,10 @@ class TaskDetail extends StatelessWidget {
                 onClick: () {},
               ),
               InkWell(
-                onTap: () {
+                onTap: () async {
+                  final result = await showDeleteTaskDialog(context,initialTask.title);
+                  if (result != true) return;
+                  if (!context.mounted) return;
                   context.read<TaskManagerCubit>().deleteTask();
                   if (context.canPop()) context.pop();
                 },

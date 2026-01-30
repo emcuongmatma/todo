@@ -17,6 +17,7 @@ class AppConstants {
   static const String TAP_TO_ADD_TASK ="Tap + to add your tasks";
   static const String ADD_TASK ="Add Task";
   static const String TASK_NAME ="Task name";
+  static const String TASK_TITLE ="Task title:";
   static const String TASK_DESCRIPTION ="Task description";
   static const String DESCRIPTION ="Description";
   static const String NOT_NULL = "Empty";
@@ -40,6 +41,7 @@ class AppConstants {
   static const String TASK_CATEGORY = "Task Category:";
   static const String SUB_TASK = "Sub-Task:";
   static const String DELETE_TASK = "Delete Task";
+  static const String ARE_YOU_SURE_DELETE_TASK = "Are You sure you want to delete this task?";
   static const String EDIT_TASK = "Edit Task";
   static const String ADD_SUB_TASK = "Add Sub-Task";
   static const String DEFAULT = "Default";
