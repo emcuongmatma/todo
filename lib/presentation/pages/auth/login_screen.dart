@@ -20,17 +20,15 @@ class LoginScreen extends StatelessWidget {
       appBar: null,
       resizeToAvoidBottomInset: false,
       body: BlocConsumer<AuthCubit, AuthState>(
+        listenWhen: (prv,cur) => prv.effect != cur.effect,
         listener: (context, state) {
           switch (state.effect) {
-            case AuthScreenEffect.loginSuccess:
+            case AuthScreenEffect.success:
               context.read<TaskCubit>().syncTasksFromServer();
             case AuthScreenEffect.none:
               null;
-            case AuthScreenEffect.wrongPassword:
-              showToast(msg: "Đăng ký thành công", isLong: true);
-              null;
-            case AuthScreenEffect.signUpSuccess:
-              null;
+            case AuthScreenEffect.error:
+              showToast(msg: state.error?.message, isLong: true);
           }
           context.read<AuthCubit>().clearEffect();
         },

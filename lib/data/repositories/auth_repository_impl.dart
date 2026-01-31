@@ -36,7 +36,10 @@ class AuthRepositoryImpl extends AuthRepository {
   TaskEither<Failure, UserEntity> login(String username, String password) {
     return TaskEither<Failure, List<dynamic>>.tryCatch(
       () async => await authRemoteDataSource.login(username),
-      (error, _) => NetworkFailure(error.toString()),
+      (error, _) {
+        if (error is AuthFailure) return error;
+        return NetworkFailure(error.toString());
+      },
     ).flatMap((userDataList) {
       final userData = userDataList.first;
       if (userData.isEmpty) {
@@ -49,7 +52,7 @@ class AuthRepositoryImpl extends AuthRepository {
         return TaskEither.tryCatch(() async {
           debugPrint("save");
           await authLocalDataSource.saveUserData(
-            userData[AppKey.ID],
+            int.parse(userData[AppKey.ID]),
             userData[AppKey.USER_AVATAR],
           );
           debugPrint("logined");
@@ -75,10 +78,16 @@ class AuthRepositoryImpl extends AuthRepository {
   void dispose() => _controller.close();
 
   @override
-  TaskEither<Failure, Map<String,dynamic>> signUp(String username, String password) {
-    return TaskEither<Failure, Map<String,dynamic>>.tryCatch(
-          () async => await authRemoteDataSource.signUp(username,password),
-          (error, _) => NetworkFailure(error.toString()),
+  TaskEither<Failure, Map<String, dynamic>> signUp(
+    String username,
+    String password,
+  ) {
+    return TaskEither<Failure, Map<String, dynamic>>.tryCatch(
+      () async => await authRemoteDataSource.signUp(username, password),
+      (error, _) {
+        if (error is AuthFailure) return error;
+        return NetworkFailure(error.toString());
+      },
     );
   }
 

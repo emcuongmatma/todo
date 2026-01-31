@@ -1,7 +1,8 @@
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:todo/core/theme/colors.dart';
 
-void showToast({String msg = "", bool isLong = false}) {
+void showToast({String? msg , bool isLong = false}) {
+  if (msg == null) return;
   Fluttertoast.showToast(
       msg: msg,
       toastLength: isLong ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT,

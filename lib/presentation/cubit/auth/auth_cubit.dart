@@ -1,9 +1,9 @@
 import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:todo/core/constants/key.dart';
+import 'package:todo/core/error/failure.dart';
 import 'package:todo/domain/repositories/auth_repository.dart';
 import 'package:todo/presentation/models/normal_input.dart';
 
@@ -95,13 +95,19 @@ class AuthCubit extends Cubit<AuthState> {
         .run();
     result.fold(
       (failure) {
-        debugPrint(failure.message);
-        emit(state.copyWith(status: AuthenticationStatus.unauthenticated));
+        emit(
+          state.copyWith(
+            status: AuthenticationStatus.unauthenticated,
+            isLoading: false,
+            effect: AuthScreenEffect.error,
+            error: failure,
+          ),
+        );
       },
       (user) => emit(
         state.copyWith(
           status: AuthenticationStatus.authenticated,
-          effect: AuthScreenEffect.loginSuccess,
+          effect: AuthScreenEffect.success,
           isLoading: false,
         ),
       ),
@@ -116,15 +122,19 @@ class AuthCubit extends Cubit<AuthState> {
     result.fold(
       (failure) {
         debugPrint(failure.message);
-        emit(state.copyWith(status: AuthenticationStatus.unauthenticated));
+        emit(
+          state.copyWith(
+            status: AuthenticationStatus.unauthenticated,
+            isLoading: false,
+            effect: AuthScreenEffect.error,
+            error: failure,
+          ),
+        );
       },
       (user) {
         if (user.containsKey(AppKey.ID)) {
           emit(
-            state.copyWith(
-              effect: AuthScreenEffect.signUpSuccess,
-              isLoading: false,
-            ),
+            state.copyWith(effect: AuthScreenEffect.success, isLoading: false),
           );
         }
       },

@@ -8,6 +8,7 @@ class AppConstants {
   static const String DONT_HAVE_ACCOUNT = "Don’t have an account? ";
   static const String ALREADY_HAVE_ACCOUNT = "Already have an account? ";
   static const String REGISTER = "Register";
+  static const String REGISTER_SUCCESS = "Register Success";
   static const String INDEX = "Index";
   static const String CALENDAR = "Calendar";
   static const String FOCUSE = "Focuse";
@@ -50,6 +51,8 @@ class AppConstants {
   static const String NOT_RESPONSE = "Server not response";
   static const String USERNAME_NOT_FOUND = "Username not found";
   static const String WRONG_USERNAME_OR_PASSWORD = "Wrong username or password";
+  static const String NETWORK_ERROR = "Network Error";
+  static const String DATABASE_ERROR = "Database Error";
 }
 
 class API {

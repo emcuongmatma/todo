@@ -2,7 +2,7 @@ part of 'auth_cubit.dart';
 
 enum AuthenticationStatus { unknown, authenticated, unauthenticated }
 
-enum AuthScreenEffect { none, wrongPassword, loginSuccess, signUpSuccess }
+enum AuthScreenEffect { none, error, success }
 
 class AuthState extends Equatable {
   final AuthenticationStatus status;
@@ -12,6 +12,7 @@ class AuthState extends Equatable {
   final bool isLoading;
   final bool isValid;
   final AuthScreenEffect effect;
+  final Failure? error;
 
   const AuthState({
     this.status = AuthenticationStatus.unauthenticated,
@@ -21,6 +22,7 @@ class AuthState extends Equatable {
     this.effect = AuthScreenEffect.none,
     this.confirmPasswordInput = const NormalInput.pure(),
     this.isLoading = false,
+    this.error
   });
 
   AuthState copyWith({
@@ -32,7 +34,8 @@ class AuthState extends Equatable {
     NormalInput? passwordInput,
     NormalInput? confirmPasswordInput,
     AuthScreenEffect? effect,
-    bool? isLoading
+    bool? isLoading,
+    Failure? error
   }) {
     return AuthState(
       status: status ?? this.status,
@@ -41,7 +44,8 @@ class AuthState extends Equatable {
       passwordInput: passwordInput ?? this.passwordInput,
       confirmPasswordInput: confirmPasswordInput ?? this.confirmPasswordInput,
       effect: effect ?? this.effect,
-      isLoading: isLoading ?? this.isLoading
+      isLoading: isLoading ?? this.isLoading,
+      error: error ?? this.error
     );
   }
 
@@ -53,6 +57,7 @@ class AuthState extends Equatable {
     confirmPasswordInput,
     isValid,
     effect,
-    isLoading
+    isLoading,
+    ?error
   ];
 }

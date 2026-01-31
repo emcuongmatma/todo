@@ -6,6 +6,10 @@ class ApiException implements Exception {
   final int? statusCode;
 
   ApiException(this.message, {this.statusCode});
+  @override
+  String toString() {
+    return message;
+  }
 }
 
 ApiException mapDioError(DioException e) {
@@ -20,6 +24,6 @@ ApiException mapDioError(DioException e) {
         statusCode: e.response?.statusCode,
       );
     default:
-      return ApiException(AppConstants.UNDEFINED);
+      return ApiException(AppConstants.NETWORK_ERROR);
   }
 }

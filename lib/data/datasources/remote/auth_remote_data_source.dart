@@ -16,6 +16,9 @@ class AuthRemoteDataSource {
       );
       return response.data;
     } on DioException catch (e) {
+      if (e.response?.statusCode == 404) {
+        throw const AuthFailure(AppConstants.WRONG_USERNAME_OR_PASSWORD);
+      }
       throw mapDioError(e);
     } catch (e) {
       throw NetworkFailure(e.toString());
