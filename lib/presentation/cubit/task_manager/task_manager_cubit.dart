@@ -9,7 +9,7 @@ import 'package:todo/presentation/models/normal_input.dart';
 
 part 'task_manager_state.dart';
 
-class TaskManagerCubit extends Cubit<AddTaskState> {
+class TaskManagerCubit extends Cubit<TaskManagerState> {
   final TaskRepository taskRepository;
   final CategoryRepository categoryRepository;
   final AuthRepository authRepository;
@@ -18,7 +18,7 @@ class TaskManagerCubit extends Cubit<AddTaskState> {
     required this.taskRepository,
     required this.categoryRepository,
     required this.authRepository,
-  }) : super(const AddTaskState());
+  }) : super(const TaskManagerState());
 
   void onTaskNameChange(String taskName) {
     emit(state.copyWith(taskName: taskName));
@@ -124,10 +124,10 @@ class TaskManagerCubit extends Cubit<AddTaskState> {
     final userId = authRepository.getUserId();
     if (userId == null) return;
     final result = await taskRepository.updateTask(state.tmpTask, userId).run();
-    result.fold((failure) => emit(state.copyWith(effect: AddTaskEffect.fail)), (
+    result.fold((failure) => emit(state.copyWith(effect: TaskManagerEffect.fail)), (
       task,
     ) {
-      emit(state.copyWith(effect: AddTaskEffect.success));
+      emit(state.copyWith(effect: TaskManagerEffect.success));
       taskRepository.updateCloudTask(task).run();
     });
   }
@@ -136,10 +136,10 @@ class TaskManagerCubit extends Cubit<AddTaskState> {
     final taskId = state.tmpTask?.id;
     if (taskId == null) return;
     final result = await taskRepository.deleteTask(taskId).run();
-    result.fold((failure) => emit(state.copyWith(effect: AddTaskEffect.fail)), (
+    result.fold((failure) => emit(state.copyWith(effect: TaskManagerEffect.fail)), (
       _,
     ) {
-      emit(state.copyWith(effect: AddTaskEffect.success));
+      emit(state.copyWith(effect: TaskManagerEffect.success));
       final serverId = state.tmpTask?.serverId;
       if (serverId == null) return;
       taskRepository.deleteCloudTask(serverId).run();
@@ -150,11 +150,12 @@ class TaskManagerCubit extends Cubit<AddTaskState> {
     final taskNameInput = NormalInput.dirty(state.taskName);
     final taskDesInput = NormalInput.dirty(state.taskDes);
     emit(
-      state.copyWith(taskNameInput: taskNameInput, taskDesInput: taskDesInput),
+      state.copyWith(taskNameInput: taskNameInput, taskDesInput: taskDesInput, showTaskDesTextField: !taskDesInput.isValid),
     );
+    if (!taskNameInput.isValid || !taskDesInput.isValid) return;
     final check = switch (true) {
-      _ when state.selectedDate == null => AddTaskEffect.invalidDate,
-      _ when state.categoryId == null => AddTaskEffect.invalidCategory,
+      _ when state.selectedDate == null => TaskManagerEffect.invalidDate,
+      _ when state.categoryId == null => TaskManagerEffect.invalidCategory,
       _ => null,
     };
     if (check != null) {
@@ -184,15 +185,15 @@ class TaskManagerCubit extends Cubit<AddTaskState> {
     final userId = authRepository.getUserId();
     if (userId == null) return;
     final result = await taskRepository.addTask(newTask, userId).run();
-    result.fold((failure) => emit(state.copyWith(effect: AddTaskEffect.fail)), (
+    result.fold((failure) => emit(state.copyWith(effect: TaskManagerEffect.fail)), (
       tasks,
     ) {
-      emit(state.copyWith(effect: AddTaskEffect.success));
+      emit(state.copyWith(effect: TaskManagerEffect.success));
       taskRepository.uploadPendingTasks().run();
     });
   }
 
   void clearEffect() {
-    emit(state.copyWith(effect: AddTaskEffect.none));
+    emit(state.copyWith(effect: TaskManagerEffect.none));
   }
 }

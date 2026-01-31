@@ -15,10 +15,10 @@ import 'package:todo/data/repositories/task_repository_impl.dart';
 import 'package:todo/domain/repositories/auth_repository.dart';
 import 'package:todo/domain/repositories/category_repository.dart';
 import 'package:todo/domain/repositories/task_repository.dart';
-import 'package:todo/presentation/cubit/add_task/task_manager_cubit.dart';
 import 'package:todo/presentation/cubit/auth/auth_cubit.dart';
 import 'package:todo/presentation/cubit/category/category_cubit.dart';
 import 'package:todo/presentation/cubit/task/task_cubit.dart';
+import 'package:todo/presentation/cubit/task_manager/task_manager_cubit.dart';
 
 final sl = GetIt.instance;
 

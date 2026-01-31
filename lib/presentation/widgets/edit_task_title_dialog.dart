@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:todo/core/constants/app_constants.dart';
 import 'package:todo/core/theme/colors.dart';
-import 'package:todo/presentation/cubit/add_task/task_manager_cubit.dart';
+import 'package:todo/presentation/cubit/task_manager/task_manager_cubit.dart';
 import 'package:todo/presentation/models/normal_input.dart';
 import 'package:todo/presentation/widgets/custom_text_field.dart';
 

@@ -7,7 +7,7 @@ import 'package:todo/core/di/injection.dart';
 import 'package:todo/core/theme/colors.dart';
 import 'package:todo/domain/entities/task_entity.dart';
 import 'package:todo/generated/assets.dart';
-import 'package:todo/presentation/cubit/add_task/task_manager_cubit.dart';
+import 'package:todo/presentation/cubit/task_manager/task_manager_cubit.dart';
 import 'package:todo/presentation/widgets/custom_calendar_dialog.dart';
 import 'package:todo/presentation/widgets/custom_tag_dialog.dart';
 import 'package:todo/presentation/widgets/custom_time_picker_dialog.dart';
@@ -38,7 +38,7 @@ class TaskDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<TaskManagerCubit, AddTaskState>(
+    return BlocConsumer<TaskManagerCubit, TaskManagerState>(
       listenWhen: (previous, current) => previous.effect != current.effect,
       listener: (context, state) {
         // switch (state.effect) {

@@ -7,7 +7,7 @@ import 'package:todo/core/di/injection.dart';
 import 'package:todo/core/theme/colors.dart';
 import 'package:todo/core/utils/toast.dart';
 import 'package:todo/generated/assets.dart';
-import 'package:todo/presentation/cubit/add_task/task_manager_cubit.dart';
+import 'package:todo/presentation/cubit/task_manager/task_manager_cubit.dart';
 import 'package:todo/presentation/models/normal_input.dart';
 import 'package:todo/presentation/widgets/custom_calendar_dialog.dart';
 import 'package:todo/presentation/widgets/custom_tag_dialog.dart';
@@ -35,24 +35,23 @@ class AddTaskBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<TaskManagerCubit, AddTaskState>(
+    return BlocConsumer<TaskManagerCubit, TaskManagerState>(
       listener: (context, state) {
         switch (state.effect) {
-          case AddTaskEffect.none:
+          case TaskManagerEffect.none:
             null;
-          case AddTaskEffect.invalidDate:
+          case TaskManagerEffect.invalidDate:
             showToast(msg: AppConstants.PLEASE_SELECT_DATE);
-            context.read<TaskManagerCubit>().clearEffect();
-          case AddTaskEffect.invalidCategory:
+          case TaskManagerEffect.invalidCategory:
             showToast(msg: AppConstants.PLEASE_SELECT_CATEGORY);
-            context.read<TaskManagerCubit>().clearEffect();
-          case AddTaskEffect.success:
+          case TaskManagerEffect.success:
             if(context.canPop()) {
               context.pop();
             }
-          case AddTaskEffect.fail:
+          case TaskManagerEffect.fail:
             null;
         }
+        context.read<TaskManagerCubit>().clearEffect();
       },
       builder: (context, state) {
         return SafeArea(

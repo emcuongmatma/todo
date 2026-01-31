@@ -1,8 +1,8 @@
 part of 'task_manager_cubit.dart';
 
-enum AddTaskEffect { none, invalidDate, invalidCategory, success, fail }
+enum TaskManagerEffect { none, invalidDate, invalidCategory, success, fail }
 
-class AddTaskState extends Equatable {
+class TaskManagerState extends Equatable {
   final String taskName;
   final String taskDes;
   final bool showTaskDesTextField;
@@ -12,9 +12,9 @@ class AddTaskState extends Equatable {
   final TimeOfDay selectedTime;
   final int priority;
   final int? categoryId;
-  final AddTaskEffect effect;
+  final TaskManagerEffect effect;
   final TaskEntity? tmpTask;
-  const AddTaskState({
+  const TaskManagerState({
     this.taskName = '',
     this.taskDes = '',
     this.showTaskDesTextField = false,
@@ -24,11 +24,11 @@ class AddTaskState extends Equatable {
     this.priority = 1,
     this.selectedTime = const TimeOfDay(hour: 1, minute: 0),
     this.categoryId,
-    this.effect = AddTaskEffect.none,
+    this.effect = TaskManagerEffect.none,
     this.tmpTask,
   });
 
-  AddTaskState copyWith({
+  TaskManagerState copyWith({
     String? taskName,
     String? taskDes,
     bool? showTaskDesTextField,
@@ -38,10 +38,10 @@ class AddTaskState extends Equatable {
     TimeOfDay? selectedTime,
     int? priority,
     int? categoryId,
-    AddTaskEffect? effect,
+    TaskManagerEffect? effect,
     TaskEntity? tmpTask
   }) {
-    return AddTaskState(
+    return TaskManagerState(
       taskName: taskName ?? this.taskName,
       taskDes: taskDes ?? this.taskDes,
       showTaskDesTextField: showTaskDesTextField ?? this.showTaskDesTextField,
