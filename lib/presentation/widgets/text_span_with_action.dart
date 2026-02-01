@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:todo/core/theme/colors.dart';
 
 class TextSpanWithAction extends StatelessWidget {
   final String text1;
@@ -18,13 +19,15 @@ class TextSpanWithAction extends StatelessWidget {
     return RichText(
       textAlign: TextAlign.center,
       text: TextSpan(
-        style: Theme.of(context).textTheme.titleMedium,
+        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+          color: ColorDark.gray
+        ),
         children: <TextSpan>[
           TextSpan(text: text1),
           TextSpan(
             text: text2,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: Colors.white
+                color: ColorDark.whiteFocus
             ),
             recognizer: TapGestureRecognizer()
               ..onTap = () {

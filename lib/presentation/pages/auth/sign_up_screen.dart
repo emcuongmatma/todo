@@ -18,6 +18,7 @@ class SignUpScreen extends StatelessWidget {
       appBar: AppBar(
         leading: GestureDetector(
           onTap: () {
+            context.read<AuthCubit>().resetInputState();
             if (context.canPop()) context.pop();
           },
           child: const Padding(
@@ -26,8 +27,9 @@ class SignUpScreen extends StatelessWidget {
           ),
         ),
       ),
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: BlocConsumer<AuthCubit, AuthState>(
+        listenWhen: (prv, cur) => prv.effect != cur.effect,
         listener: (context, state) {
           switch (state.effect) {
             case AuthScreenEffect.none:
@@ -43,97 +45,118 @@ class SignUpScreen extends StatelessWidget {
           return LoadingWrapper(
             isLoading: state.isLoading,
             child: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 16),
-                    Text(
-                      AppConstants.REGISTER,
-                      style: Theme.of(context).textTheme.headlineLarge,
-                    ),
-                    const SizedBox(height: 53),
-                    Text(
-                      AppConstants.USERNAME,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    const SizedBox(height: 8),
-                    CustomTextField(
-                      onChange: (value) => {
-                        context.read<AuthCubit>().onUsernameChange(
-                          username: value,
-                          validConfirmPassword: true,
-                        ),
-                      },
-                      hintText: AppConstants.ENTER_YOUR_USERNAME,
-                      errorText: state.usernameInput.inputStatusText,
-                    ),
-                    const SizedBox(height: 25),
-                    Text(
-                      AppConstants.PASSWORD,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    const SizedBox(height: 8),
-                    CustomTextField(
-                      onChange: (value) => {
-                        context.read<AuthCubit>().onPasswordChange(
-                          password: value,
-                          validConfirmPassword: true,
-                        ),
-                      },
-                      hintText: AppConstants.ENTER_YOUR_PASSWORD,
-                      isPasswordTextField: true,
-                      errorText: state.passwordInput.inputStatusText,
-                    ),
-                    const SizedBox(height: 25),
-                    Text(
-                      AppConstants.CONFIRM_PASSWORD,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    const SizedBox(height: 8),
-                    CustomTextField(
-                      onChange: (value) => {
-                        context.read<AuthCubit>().onConfirmPasswordChange(
-                          confirmPassword: value,
-                          validConfirmPassword: true,
-                        ),
-                      },
-                      hintText: AppConstants.ENTER_YOUR_PASSWORD,
-                      isPasswordTextField: true,
-                      errorText: state.passwordInput.inputStatusText,
-                    ),
-                    const SizedBox(height: 69),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: state.isValid
-                            ? () {
-                                context.read<AuthCubit>().signUp();
-                              }
-                            : null,
-                        child: Text(
-                          AppConstants.REGISTER,
-                          textAlign: TextAlign.center,
-                          style: Theme.of(
-                            context,
-                          ).textTheme.bodyMedium?.copyWith(color: Colors.white),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return SingleChildScrollView(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: constraints.maxHeight,
+                      ),
+                      child: IntrinsicHeight(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 16),
+                              Text(
+                                AppConstants.REGISTER,
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.headlineLarge,
+                              ),
+                              const SizedBox(height: 53),
+                              Text(
+                                AppConstants.USERNAME,
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                              const SizedBox(height: 8),
+                              CustomTextField(
+                                onChange: (value) => {
+                                  context.read<AuthCubit>().onUsernameChange(
+                                    username: value,
+                                    validConfirmPassword: true,
+                                  ),
+                                },
+                                hintText: AppConstants.ENTER_YOUR_USERNAME,
+                                errorText: state.usernameInput.inputStatusText,
+                              ),
+                              const SizedBox(height: 25),
+                              Text(
+                                AppConstants.PASSWORD,
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                              const SizedBox(height: 8),
+                              CustomTextField(
+                                onChange: (value) => {
+                                  context.read<AuthCubit>().onPasswordChange(
+                                    password: value,
+                                    validConfirmPassword: true,
+                                  ),
+                                },
+                                hintText: AppConstants.ENTER_YOUR_PASSWORD,
+                                isPasswordTextField: true,
+                                errorText: state.passwordInput.inputStatusText,
+                              ),
+                              const SizedBox(height: 25),
+                              Text(
+                                AppConstants.CONFIRM_PASSWORD,
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                              const SizedBox(height: 8),
+                              CustomTextField(
+                                onChange: (value) => {
+                                  context
+                                      .read<AuthCubit>()
+                                      .onConfirmPasswordChange(
+                                        confirmPassword: value,
+                                        validConfirmPassword: true,
+                                      ),
+                                },
+                                hintText: AppConstants.ENTER_YOUR_PASSWORD,
+                                isPasswordTextField: true,
+                                errorText:
+                                    state.confirmPasswordInput.inputStatusText,
+                              ),
+                              const SizedBox(height: 69),
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  onPressed: state.isValid
+                                      ? () {
+                                          context.read<AuthCubit>().signUp();
+                                        }
+                                      : null,
+                                  child: Text(
+                                    AppConstants.REGISTER,
+                                    textAlign: TextAlign.center,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                              const Spacer(),
+                              Align(
+                                alignment: AlignmentGeometry.bottomCenter,
+                                child: TextSpanWithAction(
+                                  text1: AppConstants.ALREADY_HAVE_ACCOUNT,
+                                  text2: AppConstants.LOGIN,
+                                  onAction: () {
+                                    context.read<AuthCubit>().resetInputState();
+                                    if (context.canPop()) context.pop();
+                                  },
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                    const Spacer(),
-                    Align(
-                      alignment: AlignmentGeometry.bottomCenter,
-                      child: TextSpanWithAction(
-                        text1: AppConstants.ALREADY_HAVE_ACCOUNT,
-                        text2: AppConstants.LOGIN,
-                        onAction: () {
-                          if (context.canPop()) context.pop();
-                        },
-                      ),
-                    ),
-                  ],
-                ),
+                  );
+                },
               ),
             ),
           );

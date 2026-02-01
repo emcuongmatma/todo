@@ -57,6 +57,13 @@ class AuthCubit extends Cubit<AuthState> {
         ? state.confirmPasswordInput.value == passwordInput.value &&
               state.confirmPasswordInput.isValid
         : true;
+    final confirmPasswordInput = validConfirmPassword
+        ? NormalInput.dirty(
+            state.confirmPasswordInput.value,
+            false,
+            password == state.confirmPasswordInput.value,
+          )
+        : null;
     emit(
       state.copyWith(
         passwordInput: passwordInput,
@@ -64,6 +71,7 @@ class AuthCubit extends Cubit<AuthState> {
             passwordInput.isValid &&
             state.usernameInput.isValid &&
             confirmValid,
+        confirmPasswordInput: confirmPasswordInput,
       ),
     );
   }
@@ -72,10 +80,15 @@ class AuthCubit extends Cubit<AuthState> {
     required String confirmPassword,
     required bool validConfirmPassword,
   }) {
-    final confirmPasswordInput = NormalInput.dirty(confirmPassword);
     final confirmValid = validConfirmPassword
-        ? state.passwordInput.value == confirmPasswordInput.value
+        ? state.passwordInput.value == confirmPassword
         : true;
+    debugPrint(confirmValid.toString());
+    final confirmPasswordInput = NormalInput.dirty(
+      confirmPassword,
+      false,
+      confirmValid,
+    );
     emit(
       state.copyWith(
         confirmPasswordInput: confirmPasswordInput,
@@ -84,6 +97,18 @@ class AuthCubit extends Cubit<AuthState> {
             state.usernameInput.isValid &&
             state.passwordInput.isValid &&
             confirmValid,
+      ),
+    );
+  }
+
+  void resetInputState() {
+    emit(
+      state.copyWith(
+        username: "",
+        password: "",
+        usernameInput: const NormalInput.pure(),
+        passwordInput: const NormalInput.pure(),
+        confirmPasswordInput: const NormalInput.pure(),
       ),
     );
   }
@@ -101,6 +126,10 @@ class AuthCubit extends Cubit<AuthState> {
             isLoading: false,
             effect: AuthScreenEffect.error,
             error: failure,
+            passwordInput: NormalInput.dirty(
+              state.passwordInput.value,
+              failure is AuthFailure,
+            ),
           ),
         );
       },

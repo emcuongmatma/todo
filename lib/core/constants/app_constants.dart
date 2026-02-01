@@ -51,6 +51,7 @@ class AppConstants {
   static const String NOT_RESPONSE = "Server not response";
   static const String USERNAME_NOT_FOUND = "Username not found";
   static const String WRONG_USERNAME_OR_PASSWORD = "Wrong username or password";
+  static const String PASSWORD_NOT_MATCH = "Password not match";
   static const String NETWORK_ERROR = "Network Error";
   static const String DATABASE_ERROR = "Database Error";
 }

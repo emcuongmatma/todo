@@ -20,7 +20,7 @@ class LoginScreen extends StatelessWidget {
       appBar: null,
       resizeToAvoidBottomInset: false,
       body: BlocConsumer<AuthCubit, AuthState>(
-        listenWhen: (prv,cur) => prv.effect != cur.effect,
+        listenWhen: (prv, cur) => prv.effect != cur.effect,
         listener: (context, state) {
           switch (state.effect) {
             case AuthScreenEffect.success:
@@ -54,7 +54,10 @@ class LoginScreen extends StatelessWidget {
                     const SizedBox(height: 8),
                     CustomTextField(
                       onChange: (value) => {
-                        context.read<AuthCubit>().onUsernameChange(username:  value,validConfirmPassword: false),
+                        context.read<AuthCubit>().onUsernameChange(
+                          username: value,
+                          validConfirmPassword: false,
+                        ),
                       },
                       hintText: AppConstants.ENTER_YOUR_USERNAME,
                       errorText: state.usernameInput.inputStatusText,
@@ -67,7 +70,10 @@ class LoginScreen extends StatelessWidget {
                     const SizedBox(height: 8),
                     CustomTextField(
                       onChange: (value) => {
-                        context.read<AuthCubit>().onPasswordChange(password:  value, validConfirmPassword: false),
+                        context.read<AuthCubit>().onPasswordChange(
+                          password: value,
+                          validConfirmPassword: false,
+                        ),
                       },
                       hintText: AppConstants.ENTER_YOUR_PASSWORD,
                       isPasswordTextField: true,
@@ -98,10 +104,12 @@ class LoginScreen extends StatelessWidget {
                         text1: AppConstants.DONT_HAVE_ACCOUNT,
                         text2: AppConstants.REGISTER,
                         onAction: () {
+                          context.read<AuthCubit>().resetInputState();
                           context.pushNamed(AppRouteName.SIGNUP_ROUTE_NAME);
                         },
                       ),
                     ),
+                    const SizedBox(height: 16),
                   ],
                 ),
               ),
