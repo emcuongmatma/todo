@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:todo/core/constants/routes.dart';
 import 'package:todo/core/di/injection.dart';
+import 'package:todo/core/router/app_page_transition.dart';
 import 'package:todo/core/router/router_refresh_stream.dart';
 import 'package:todo/domain/entities/task_entity.dart';
 import 'package:todo/presentation/cubit/auth/auth_cubit.dart';
@@ -40,9 +41,10 @@ class AppRouter {
     },
     routes: [
       StatefulShellRoute.indexedStack(
-        builder: (context, state, navigationShell) {
-          return MainWrapper(navigationShell: navigationShell);
-        },
+        pageBuilder: (context, state, navigationShell) => AppTransitionPage(
+          child: MainWrapper(navigationShell: navigationShell),
+          key: state.pageKey,
+        ),
         branches: [
           StatefulShellBranch(
             routes: [
@@ -89,9 +91,12 @@ class AppRouter {
         name: AppRouteName.TASK_DETAIL_ROUTE_NAME,
         path: AppRoutePath.TASK_DETAIL_ROUTE_PATH,
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (BuildContext context, GoRouterState state) {
+        pageBuilder: (BuildContext context, GoRouterState state) {
           final task = state.extra as TaskEntity;
-          return TaskDetailScreen(initialTask: task);
+          return AppTransitionPage(
+            child: TaskDetailScreen(initialTask: task),
+            key: state.pageKey,
+          );
         },
       ),
       GoRoute(
@@ -106,9 +111,8 @@ class AppRouter {
         name: AppRouteName.SIGNUP_ROUTE_NAME,
         path: AppRoutePath.SIGNUP_ROUTE_PATH,
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (BuildContext context, GoRouterState state) {
-          return const SignUpScreen();
-        },
+        pageBuilder: (BuildContext context, GoRouterState state) =>
+            AppTransitionPage(child: const SignUpScreen(), key: state.pageKey),
       ),
     ],
   );
