@@ -36,6 +36,7 @@ class AddTaskBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<TaskManagerCubit, TaskManagerState>(
+      listenWhen: (pre, cur) => pre.effect != cur.effect,
       listener: (context, state) {
         switch (state.effect) {
           case TaskManagerEffect.none:
@@ -44,8 +45,10 @@ class AddTaskBottomSheet extends StatelessWidget {
             showToast(msg: AppConstants.PLEASE_SELECT_DATE);
           case TaskManagerEffect.invalidCategory:
             showToast(msg: AppConstants.PLEASE_SELECT_CATEGORY);
+          case TaskManagerEffect.invalidDescription:
+            showToast(msg: AppConstants.PLEASE_INPUT_DESCRIPTION);
           case TaskManagerEffect.success:
-            if(context.canPop()) {
+            if (context.canPop()) {
               context.pop();
             }
           case TaskManagerEffect.fail:
@@ -53,6 +56,10 @@ class AddTaskBottomSheet extends StatelessWidget {
         }
         context.read<TaskManagerCubit>().clearEffect();
       },
+      buildWhen: (pre, cur) =>
+          pre.taskDesInput != cur.taskDesInput ||
+          pre.taskNameInput != cur.taskNameInput ||
+          pre.showTaskDesTextField != cur.showTaskDesTextField,
       builder: (context, state) {
         return SafeArea(
           child: AnimatedPadding(
@@ -84,19 +91,28 @@ class AddTaskBottomSheet extends StatelessWidget {
                           hintText: AppConstants.TASK_NAME,
                           errorText: state.taskNameInput.inputStatusText,
                         )
-                      : Text(
-                          state.taskName,
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontSize: 18,
-                            color: ColorDark.whiteFocus,
+                      : InkWell(
+                          onTap: () => context
+                              .read<TaskManagerCubit>()
+                              .showTaskNameInput(),
+                          child: Text(
+                            state.taskName,
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                                  fontSize: 18,
+                                  color: ColorDark.whiteFocus,
+                                ),
                           ),
                         ),
                   !state.showTaskDesTextField
                       ? InkWell(
-                          onTap: () =>
-                              context.read<TaskManagerCubit>().onCheckTaskName(),
+                          onTap: () => context
+                              .read<TaskManagerCubit>()
+                              .onCheckTaskName(),
                           child: Text(
-                            AppConstants.DESCRIPTION,
+                            state.taskDes.isEmpty
+                                ? AppConstants.DESCRIPTION
+                                : state.taskDes,
                             style: Theme.of(context).textTheme.bodyMedium
                                 ?.copyWith(
                                   fontSize: 18,
@@ -118,18 +134,20 @@ class AddTaskBottomSheet extends StatelessWidget {
                       InkWell(
                         onTap: () async {
                           FocusManager.instance.primaryFocus?.unfocus();
-                          await Future.delayed(const Duration(milliseconds: 200));
+                          await Future.delayed(
+                            const Duration(milliseconds: 200),
+                          );
                           if (!context.mounted) return;
                           DateTime? selectedDate = await showAppCalendarDialog(
-                            context,
-                            state.selectedDate ?? DateTime.now(),
+                            context: context,
+                            initialDate: state.selectedDate ?? DateTime.now(),
                           );
                           debugPrint(selectedDate.toString());
                           if (!context.mounted) return;
                           if (selectedDate == null) return;
                           TimeOfDay? selectedTime = await showCustomTimePicker(
-                            context,
-                            TimeOfDay(
+                            context: context,
+                            initialTime: TimeOfDay(
                               hour: state.selectedDate?.hour ?? 1,
                               minute: state.selectedDate?.minute ?? 0,
                             ),
@@ -150,11 +168,13 @@ class AddTaskBottomSheet extends StatelessWidget {
                       InkWell(
                         onTap: () async {
                           FocusManager.instance.primaryFocus?.unfocus();
-                          await Future.delayed(const Duration(milliseconds: 200));
+                          await Future.delayed(
+                            const Duration(milliseconds: 200),
+                          );
                           if (!context.mounted) return;
                           int? categoryId = await showCategoryPicker(
-                            context,
-                            state.categoryId ?? 1,
+                            context: context,
+                            initialCategory: state.categoryId ?? 1,
                           );
                           if (categoryId == null) return;
                           if (!context.mounted) return;
@@ -170,12 +190,14 @@ class AddTaskBottomSheet extends StatelessWidget {
                       InkWell(
                         onTap: () async {
                           FocusManager.instance.primaryFocus?.unfocus();
-                          await Future.delayed(const Duration(milliseconds: 200));
+                          await Future.delayed(
+                            const Duration(milliseconds: 200),
+                          );
                           if (!context.mounted) return;
                           debugPrint(state.priority.toString());
                           int? priority = await showTaskPriorityDialog(
-                            context,
-                            state.priority,
+                            context: context,
+                            initialPriority: state.priority,
                           );
                           if (!context.mounted) return;
                           if (priority == null) return;
@@ -190,7 +212,8 @@ class AddTaskBottomSheet extends StatelessWidget {
                       ),
                       const Spacer(),
                       InkWell(
-                        onTap: () => context.read<TaskManagerCubit>().validate(),
+                        onTap: () =>
+                            context.read<TaskManagerCubit>().validate(),
                         child: Padding(
                           padding: const EdgeInsets.all(4),
                           child: SvgPicture.asset(Assets.iconsIcSend),
@@ -207,5 +230,3 @@ class AddTaskBottomSheet extends StatelessWidget {
     );
   }
 }
-
-

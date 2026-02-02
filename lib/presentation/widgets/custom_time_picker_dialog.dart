@@ -117,10 +117,13 @@ class _TimeWheelPickerState extends State<TimeWheelPicker> {
   }
 }
 
-Future<TimeOfDay?> showCustomTimePicker(
-  BuildContext context,
-  TimeOfDay initialTime,
-) async {
+enum TimePickerDialogMode { create, edit }
+
+Future<TimeOfDay?> showCustomTimePicker({
+  required BuildContext context,
+  required TimeOfDay initialTime,
+  TimePickerDialogMode mode = TimePickerDialogMode.create,
+}) async {
   int selectedHour = initialTime.hourOfPeriod;
   int selectedMinute = initialTime.minute;
   int selectedPeriodIndex = initialTime.period == DayPeriod.pm ? 1 : 0;
@@ -183,20 +186,29 @@ Future<TimeOfDay?> showCustomTimePicker(
                     child: ElevatedButton(
                       style: Theme.of(context).elevatedButtonTheme.style,
                       onPressed: () {
-                        debugPrint("hour: $selectedHour minute: $selectedMinute");
+                        debugPrint(
+                          "hour: $selectedHour minute: $selectedMinute",
+                        );
                         int newHour = selectedHour;
                         if (selectedPeriodIndex == 1) {
-                          newHour = (selectedHour == 12) ? 12 : selectedHour + 12;
+                          newHour = (selectedHour == 12)
+                              ? 12
+                              : selectedHour + 12;
                         } else {
                           newHour = (selectedHour == 12) ? 0 : selectedHour;
                         }
                         debugPrint("new hour: $newHour");
-                        final result = initialTime.replacing(hour: newHour, minute: selectedMinute);
+                        final result = initialTime.replacing(
+                          hour: newHour,
+                          minute: selectedMinute,
+                        );
                         debugPrint(result.toString());
                         if (context.canPop()) context.pop(result);
                       },
                       child: Text(
-                        AppConstants.SAVE,
+                        mode == TimePickerDialogMode.create
+                            ? AppConstants.SAVE
+                            : AppConstants.EDIT,
                         textAlign: TextAlign.center,
                         style: Theme.of(
                           context,

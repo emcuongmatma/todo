@@ -60,7 +60,7 @@ final appTheme = ThemeData(
       if (states.contains(WidgetState.selected)) {
         return ColorDark.primary;
       }
-      return Colors.transparent;
+      return ColorDark.bottomNavigationBackground;
     }),
   ),
 );

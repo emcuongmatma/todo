@@ -124,44 +124,52 @@ class TaskManagerCubit extends Cubit<TaskManagerState> {
     final userId = authRepository.getUserId();
     if (userId == null) return;
     final result = await taskRepository.updateTask(state.tmpTask, userId).run();
-    result.fold((failure) => emit(state.copyWith(effect: TaskManagerEffect.fail)), (
-      task,
-    ) {
-      emit(state.copyWith(effect: TaskManagerEffect.success));
-      taskRepository.updateCloudTask(task).run();
-    });
+    result.fold(
+      (failure) => emit(state.copyWith(effect: TaskManagerEffect.fail)),
+      (task) {
+        emit(state.copyWith(effect: TaskManagerEffect.success));
+        taskRepository.updateCloudTask(task).run();
+      },
+    );
   }
 
   Future<void> deleteTask() async {
     final taskId = state.tmpTask?.id;
     if (taskId == null) return;
     final result = await taskRepository.deleteTask(taskId).run();
-    result.fold((failure) => emit(state.copyWith(effect: TaskManagerEffect.fail)), (
-      _,
-    ) {
-      emit(state.copyWith(effect: TaskManagerEffect.success));
-      final serverId = state.tmpTask?.serverId;
-      if (serverId == null) return;
-      taskRepository.deleteCloudTask(serverId).run();
-    });
+    result.fold(
+      (failure) => emit(state.copyWith(effect: TaskManagerEffect.fail)),
+      (_) {
+        emit(state.copyWith(effect: TaskManagerEffect.success));
+        final serverId = state.tmpTask?.serverId;
+        if (serverId == null) return;
+        taskRepository.deleteCloudTask(serverId).run();
+      },
+    );
   }
 
   Future<void> validate() async {
-    final taskNameInput = NormalInput.dirty(state.taskName);
-    final taskDesInput = NormalInput.dirty(state.taskDes);
-    emit(
-      state.copyWith(taskNameInput: taskNameInput, taskDesInput: taskDesInput, showTaskDesTextField: !taskDesInput.isValid),
-    );
-    if (!taskNameInput.isValid || !taskDesInput.isValid) return;
-    final check = switch (true) {
-      _ when state.selectedDate == null => TaskManagerEffect.invalidDate,
-      _ when state.categoryId == null => TaskManagerEffect.invalidCategory,
-      _ => null,
-    };
-    if (check != null) {
-      emit(state.copyWith(effect: check));
-      return;
+    final nameInput = NormalInput.dirty(state.taskName);
+    final desInput = NormalInput.dirty(state.taskDes);
+
+
+    TaskManagerEffect? currentEffect;
+    if (!nameInput.isValid || !desInput.isValid) {
+      currentEffect = desInput.isValid ? null : TaskManagerEffect.invalidDescription;
+    } else if (state.selectedDate == null) {
+      currentEffect = TaskManagerEffect.invalidDate;
+    } else if (state.categoryId == null) {
+      currentEffect = TaskManagerEffect.invalidCategory;
     }
+
+    emit(state.copyWith(
+      taskNameInput: nameInput,
+      taskDesInput: desInput,
+      effect: currentEffect,
+    ));
+
+    if (currentEffect != null || !nameInput.isValid || !desInput.isValid) return;
+
     debugPrint(
       "taskNameInput : ${state.taskNameInput.isValid}, "
       "taskDesInput: ${state.taskDesInput.isValid}, "
@@ -185,12 +193,13 @@ class TaskManagerCubit extends Cubit<TaskManagerState> {
     final userId = authRepository.getUserId();
     if (userId == null) return;
     final result = await taskRepository.addTask(newTask, userId).run();
-    result.fold((failure) => emit(state.copyWith(effect: TaskManagerEffect.fail)), (
-      tasks,
-    ) {
-      emit(state.copyWith(effect: TaskManagerEffect.success));
-      taskRepository.uploadPendingTasks().run();
-    });
+    result.fold(
+      (failure) => emit(state.copyWith(effect: TaskManagerEffect.fail)),
+      (tasks) {
+        emit(state.copyWith(effect: TaskManagerEffect.success));
+        taskRepository.uploadPendingTasks().run();
+      },
+    );
   }
 
   void clearEffect() {

@@ -65,7 +65,7 @@ Future<bool?> showEditTaskNameAndDescription({
                           }
                         },
                         child: Text(
-                          AppConstants.SAVE,
+                          AppConstants.EDIT,
                           textAlign: TextAlign.center,
                           style: Theme.of(
                             context,

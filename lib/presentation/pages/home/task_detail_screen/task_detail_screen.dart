@@ -17,6 +17,7 @@ import 'package:todo/presentation/widgets/task_priority_dialog.dart';
 
 class TaskDetailScreen extends StatelessWidget {
   final TaskEntity initialTask;
+
   const TaskDetailScreen({super.key, required this.initialTask});
 
   @override
@@ -93,8 +94,14 @@ class TaskDetail extends StatelessWidget {
                       child: Checkbox(
                         value: state.tmpTask?.isCompleted,
                         shape: const CircleBorder(),
+                        side: const BorderSide(
+                          color: ColorDark.whiteFocus,
+                          width: 1.5,
+                        ),
                         onChanged: (val) {
-                          context.read<TaskManagerCubit>().updateTmpTask(isCompleted: val);
+                          context.read<TaskManagerCubit>().updateTmpTask(
+                            isCompleted: val,
+                          );
                         },
                       ),
                     ),
@@ -114,9 +121,8 @@ class TaskDetail extends StatelessWidget {
                           (state.tmpTask ?? initialTask).description,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 3,
-                          style: Theme.of(
-                            context,
-                          ).textTheme.bodyMedium?.copyWith(color: ColorDark.gray),
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(color: ColorDark.gray),
                         ),
                       ],
                     ),
@@ -154,19 +160,21 @@ class TaskDetail extends StatelessWidget {
                 info: (state.tmpTask ?? initialTask).dateTime.toCustomString(),
                 onClick: () async {
                   DateTime? selectedDate = await showAppCalendarDialog(
-                    context,
-                    (state.tmpTask ?? initialTask).dateTime,
+                    context: context,
+                    initialDate: (state.tmpTask ?? initialTask).dateTime,
+                    mode: CalendarDialogMode.edit,
                   );
                   debugPrint(selectedDate.toString());
                   if (!context.mounted) return;
                   if (selectedDate == null) return;
                   TimeOfDay? selectedTime = await showCustomTimePicker(
-                    context,
-                    TimeOfDay(
+                    context: context,
+                    initialTime: TimeOfDay(
                       hour: (state.selectedDate ?? initialTask.dateTime).hour,
                       minute:
                           (state.selectedDate ?? initialTask.dateTime).minute,
                     ),
+                    mode: TimePickerDialogMode.edit,
                   );
                   if (!context.mounted) return;
                   context.read<TaskManagerCubit>().updateTmpTask(
@@ -184,8 +192,9 @@ class TaskDetail extends StatelessWidget {
                 icon: (state.tmpTask ?? initialTask).category.icon,
                 onClick: () async {
                   int? categoryId = await showCategoryPicker(
-                    context,
-                    (state.tmpTask ?? initialTask).category.id,
+                    context: context,
+                    initialCategory: (state.tmpTask ?? initialTask).category.id,
+                    mode: CategoryPickerDialogMode.edit,
                   );
                   if (categoryId == null) return;
                   if (!context.mounted) return;
@@ -202,8 +211,9 @@ class TaskDetail extends StatelessWidget {
                     : (state.tmpTask ?? initialTask).priority.toString(),
                 onClick: () async {
                   int? priority = await showTaskPriorityDialog(
-                    context,
-                    (state.tmpTask ?? initialTask).priority,
+                    context: context,
+                    initialPriority: (state.tmpTask ?? initialTask).priority,
+                    mode: TaskPriorityDialogMode.edit,
                   );
                   if (priority == null) return;
                   if (!context.mounted) return;
@@ -220,7 +230,10 @@ class TaskDetail extends StatelessWidget {
               ),
               InkWell(
                 onTap: () async {
-                  final result = await showDeleteTaskDialog(context,initialTask.title);
+                  final result = await showDeleteTaskDialog(
+                    context,
+                    initialTask.title,
+                  );
                   if (result != true) return;
                   if (!context.mounted) return;
                   context.read<TaskManagerCubit>().deleteTask();
@@ -247,7 +260,7 @@ class TaskDetail extends StatelessWidget {
                   onPressed: () {
                     debugPrint("${state.tmpTask?.id}");
                     context.read<TaskManagerCubit>().updateTask();
-                    if(context.canPop()) context.pop();
+                    if (context.canPop()) context.pop();
                   },
                   child: Text(
                     AppConstants.EDIT_TASK,
@@ -295,7 +308,7 @@ class TaskInfoItem extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-              color: Colors.white54,
+              color: ColorDark.white21,
               borderRadius: BorderRadius.circular(6),
             ),
             child: Row(

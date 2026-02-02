@@ -42,7 +42,7 @@ class _CategoryPickerState extends State<CategoryPicker> {
         crossAxisCount: 3,
         mainAxisSpacing: 16,
         crossAxisSpacing: 16,
-        childAspectRatio: 0.9
+        childAspectRatio: 0.9,
       ),
       itemCount: categories.length + 1,
       itemBuilder: (context, index) {
@@ -62,7 +62,7 @@ class _CategoryPickerState extends State<CategoryPicker> {
           return CategoryItem(
             item: InitialData.createCategoryItem,
             isSelected: false,
-            onClick: () {}
+            onClick: () {},
           );
         }
       },
@@ -95,11 +95,9 @@ class CategoryItem extends StatelessWidget {
               color: CategoryEntity.hexToColor(item.backgroundColor),
               borderRadius: const BorderRadiusGeometry.all(Radius.circular(4)),
               border: BoxBorder.all(
-                      color: isSelected
-                          ? ColorDark.primary
-                          : Colors.transparent,
-                      width: 4,
-                    ),
+                color: isSelected ? ColorDark.primary : Colors.transparent,
+                width: 4,
+              ),
             ),
             child: SvgPicture.asset(item.icon),
           ),
@@ -110,10 +108,13 @@ class CategoryItem extends StatelessWidget {
   }
 }
 
-Future<int?> showCategoryPicker(
-  BuildContext context,
-  int initialCategory,
-) async {
+enum CategoryPickerDialogMode { create, edit }
+
+Future<int?> showCategoryPicker({
+  required BuildContext context,
+  required int initialCategory,
+  CategoryPickerDialogMode mode = CategoryPickerDialogMode.create,
+}) async {
   int selectedCategory = initialCategory;
   return showDialog<int>(
     context: context,
@@ -169,7 +170,9 @@ Future<int?> showCategoryPicker(
                         if (context.canPop()) context.pop(selectedCategory);
                       },
                       child: Text(
-                        AppConstants.SAVE,
+                        mode == CategoryPickerDialogMode.create
+                            ? AppConstants.CHOOSE_CATEGORY
+                            : AppConstants.EDIT,
                         textAlign: TextAlign.center,
                         style: Theme.of(
                           context,

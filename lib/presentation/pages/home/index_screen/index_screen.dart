@@ -204,6 +204,10 @@ class TaskFilterSection extends StatelessWidget {
                       value: item.isCompleted,
                       shape: const CircleBorder(),
                       visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+                      side: const BorderSide(
+                        color: ColorDark.whiteFocus,
+                        width: 1.5,
+                      ),
                       onChanged: (val) {},
                     ),
                     const SizedBox(width: 12),

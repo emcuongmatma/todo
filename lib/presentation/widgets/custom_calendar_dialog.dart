@@ -154,10 +154,13 @@ class _CustomCalendarState extends State<CustomCalendar> {
   }
 }
 
-Future<DateTime?> showAppCalendarDialog(
-  BuildContext context,
-  DateTime initialDate,
-) {
+enum CalendarDialogMode { create, edit }
+
+Future<DateTime?> showAppCalendarDialog({
+  required BuildContext context,
+  required DateTime initialDate,
+  CalendarDialogMode mode = CalendarDialogMode.create
+}) {
   return showDialog<DateTime>(
     context: context,
     barrierDismissible: false,
@@ -197,7 +200,7 @@ Future<DateTime?> showAppCalendarDialog(
                       style: Theme.of(context).elevatedButtonTheme.style,
                       onPressed: () => context.pop(tempSelectedDate),
                       child: Text(
-                        AppConstants.CHOOSE_TIME,
+                        mode == CalendarDialogMode.create ? AppConstants.CHOOSE_TIME : AppConstants.EDIT_TIME,
                         textAlign: TextAlign.center,
                         style: Theme.of(
                           context,

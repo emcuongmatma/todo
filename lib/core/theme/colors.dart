@@ -6,6 +6,7 @@ class ColorDark {
   static const Color bottomNavigationBackground = Color(0xFF363636);
   static const Color whiteNormal = Color(0xFAFFFFFF);
   static const Color whiteFocus = Color(0xDEFFFFFF);
+  static const Color white21 = Color(0x36FFFFFF);
   static const Color gray = Color(0xFFAFAFAF);
   static const Color dividerColor = Color(0xFF979797);
   static const Color error = Color(0xFFFF4949);

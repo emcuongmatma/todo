@@ -29,6 +29,7 @@ class AppConstants {
   static const String TASK_PRIORITY = "Task Priority";
   static const String CHOOSE_CATEGORY = "Choose Category";
   static const String CREATE_NEW = "Create New";
+  static const String PLEASE_INPUT_DESCRIPTION = "Please input description";
   static const String PLEASE_SELECT_DATE = "Please select date";
   static const String PLEASE_SELECT_CATEGORY = "Please select category";
   static const String SEARCH_FOR_YOUR_TASK = "Search for your task...";
@@ -44,6 +45,8 @@ class AppConstants {
   static const String DELETE_TASK = "Delete Task";
   static const String ARE_YOU_SURE_DELETE_TASK = "Are You sure you want to delete this task?";
   static const String EDIT_TASK = "Edit Task";
+  static const String EDIT_TIME = "Edit Time";
+  static const String EDIT = "Edit";
   static const String ADD_SUB_TASK = "Add Sub-Task";
   static const String DEFAULT = "Default";
   static const String UNDEFINED = "Undefined";

@@ -5,10 +5,13 @@ import 'package:todo/core/constants/app_constants.dart';
 import 'package:todo/core/theme/colors.dart';
 import 'package:todo/generated/assets.dart';
 
-Future<int?> showTaskPriorityDialog(
-  BuildContext context,
+enum TaskPriorityDialogMode { create, edit }
+
+Future<int?> showTaskPriorityDialog({
+  required BuildContext context,
   int? initialPriority,
-) async {
+  TaskPriorityDialogMode mode = TaskPriorityDialogMode.create,
+}) async {
   return showDialog<int>(
     context: context,
     barrierDismissible: false,
@@ -63,7 +66,9 @@ Future<int?> showTaskPriorityDialog(
                         if (context.canPop()) context.pop(selectedItem);
                       },
                       child: Text(
-                        AppConstants.SAVE,
+                        mode == TaskPriorityDialogMode.create
+                            ? AppConstants.SAVE
+                            : AppConstants.EDIT,
                         textAlign: TextAlign.center,
                         style: Theme.of(
                           context,

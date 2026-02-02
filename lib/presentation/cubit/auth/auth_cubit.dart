@@ -14,11 +14,7 @@ class AuthCubit extends Cubit<AuthState> {
   StreamSubscription? _getAuthStatus;
 
   AuthCubit({required this.authRepository})
-    : super(
-        AuthState(
-          status: authRepository.getInitialStatus()
-        ),
-      );
+    : super(AuthState(status: authRepository.getInitialStatus()));
 
   void init() {
     if (_getAuthStatus != null) return;
@@ -59,14 +55,13 @@ class AuthCubit extends Cubit<AuthState> {
   }) {
     final passwordInput = NormalInput.dirty(password);
     final confirmValid = validConfirmPassword
-        ? state.confirmPasswordInput.value == passwordInput.value &&
-              state.confirmPasswordInput.isValid
+        ? state.confirmPasswordInput.value == passwordInput.value
         : true;
     final confirmPasswordInput = validConfirmPassword
         ? NormalInput.dirty(
             state.confirmPasswordInput.value,
             false,
-            password == state.confirmPasswordInput.value,
+            confirmValid,
           )
         : null;
     emit(
@@ -100,7 +95,6 @@ class AuthCubit extends Cubit<AuthState> {
         isValid:
             confirmPasswordInput.isValid &&
             state.usernameInput.isValid &&
-            state.passwordInput.isValid &&
             confirmValid,
       ),
     );

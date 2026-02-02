@@ -6,50 +6,47 @@ final textTheme = TextTheme(
   headlineLarge: GoogleFonts.lato(
     fontWeight: FontWeight.w700,
     color: ColorDark.whiteFocus,
-    fontSize: 32
+    fontSize: 32,
   ),
   headlineMedium: GoogleFonts.lato(
-      fontWeight: FontWeight.w700,
-      color: ColorDark.whiteFocus,
-      fontSize: 20
+    fontWeight: FontWeight.w700,
+    color: ColorDark.whiteFocus,
+    fontSize: 20,
   ),
   headlineSmall: GoogleFonts.lato(
-      fontWeight: FontWeight.w700,
-      color: ColorDark.whiteFocus,
-      fontSize: 16
+    fontWeight: FontWeight.w700,
+    color: ColorDark.whiteFocus,
+    fontSize: 16,
   ),
   titleLarge: GoogleFonts.lato(
-      fontWeight: FontWeight.w500,
-      color: ColorDark.whiteFocus,
-      fontSize: 18
+    fontWeight: FontWeight.w500,
+    color: ColorDark.whiteFocus,
+    fontSize: 18,
   ),
   titleMedium: GoogleFonts.lato(
-      fontWeight: FontWeight.w500,
-      color: ColorDark.whiteFocus,
-      fontSize: 16
+    fontWeight: FontWeight.w500,
+    color: ColorDark.whiteFocus,
+    fontSize: 16,
   ),
   titleSmall: GoogleFonts.lato(
-      fontWeight: FontWeight.w500,
-      color: ColorDark.whiteFocus,
-      fontSize: 14
+    fontWeight: FontWeight.w500,
+    color: ColorDark.whiteFocus,
+    fontSize: 14,
   ),
-  labelMedium: GoogleFonts.lato(
-    fontWeight: FontWeight.w600,
-    fontSize: 24
-  ),
+  labelMedium: GoogleFonts.lato(fontWeight: FontWeight.w600, fontSize: 24),
   bodyLarge: GoogleFonts.lato(
     fontWeight: FontWeight.w400,
-      color: ColorDark.whiteFocus,
-    fontSize: 20
+    color: ColorDark.whiteFocus,
+    fontSize: 20,
   ),
   bodyMedium: GoogleFonts.lato(
-      fontWeight: FontWeight.w400,
-      color: ColorDark.whiteFocus,
-      fontSize: 16
+    fontWeight: FontWeight.w400,
+    color: ColorDark.whiteFocus,
+    fontSize: 16,
   ),
   bodySmall: GoogleFonts.lato(
-      fontWeight: FontWeight.w400,
-      color: ColorDark.whiteFocus,
-      fontSize: 12
+    fontWeight: FontWeight.w400,
+    color: ColorDark.whiteFocus,
+    fontSize: 12
   ),
 );
