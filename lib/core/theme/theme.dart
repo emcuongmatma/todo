@@ -11,7 +11,10 @@ final appTheme = ThemeData(
     seedColor: ColorDark.primary,
     onSurface: ColorDark.whiteFocus,
   ),
-  appBarTheme: const AppBarThemeData(backgroundColor: ColorDark.background),
+  appBarTheme: const AppBarThemeData(
+    backgroundColor: ColorDark.background,
+    scrolledUnderElevation: 0,
+  ),
   floatingActionButtonTheme: const FloatingActionButtonThemeData(
     backgroundColor: ColorDark.primary,
     shape: CircleBorder(),

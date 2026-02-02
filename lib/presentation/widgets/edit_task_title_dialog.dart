@@ -36,7 +36,13 @@ Future<bool?> showEditTaskNameAndDescription({
                   height: 1,
                 ),
                 const SizedBox(height: 22),
-                TaskInputSection(initialTaskName: initialTaskName,initialTaskDescription: initialTaskDescription,),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
+                  child: TaskInputSection(
+                    initialTaskName: initialTaskName,
+                    initialTaskDescription: initialTaskDescription,
+                  ),
+                ),
                 const SizedBox(height: 18),
                 Row(
                   spacing: 5,
@@ -59,8 +65,7 @@ Future<bool?> showEditTaskNameAndDescription({
                       child: ElevatedButton(
                         style: Theme.of(context).elevatedButtonTheme.style,
                         onPressed: () {
-                          if (taskCubit.validateText() &&
-                              context.canPop()) {
+                          if (taskCubit.validateText() && context.canPop()) {
                             context.pop(true);
                           }
                         },
@@ -87,11 +92,15 @@ Future<bool?> showEditTaskNameAndDescription({
 class TaskInputSection extends StatefulWidget {
   final String initialTaskName;
   final String initialTaskDescription;
+  final FocusNode? taskNameFocus;
+  final FocusNode? taskDesFocus;
 
   const TaskInputSection({
     super.key,
-    required this.initialTaskName,
-    required this.initialTaskDescription,
+    this.initialTaskName = "",
+    this.initialTaskDescription = "",
+    this.taskNameFocus,
+    this.taskDesFocus,
   });
 
   @override
@@ -108,7 +117,9 @@ class _TaskInputSectionState extends State<TaskInputSection> {
     _taskNameController = TextEditingController()
       ..value = TextEditingValue(
         text: widget.initialTaskName,
-        selection: TextSelection.collapsed(offset: widget.initialTaskName.length),
+        selection: TextSelection.collapsed(
+          offset: widget.initialTaskName.length,
+        ),
       );
     _taskDescriptionController = TextEditingController()
       ..value = TextEditingValue(
@@ -129,52 +140,57 @@ class _TaskInputSectionState extends State<TaskInputSection> {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<TaskManagerCubit>().state;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 14),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 17,
-        children: [
-          !state.showTaskDesTextField
-              ? CustomTextField(
-                  controller: _taskNameController,
-                  onChange: (value) =>
-                      context.read<TaskManagerCubit>().onTaskNameChange(value),
-                  hintText: AppConstants.TASK_NAME,
-                  errorText: state.taskNameInput.inputStatusText,
-                )
-              : InkWell(
-                  onTap: () => context.read<TaskManagerCubit>().showTaskNameInput(),
-                  child: Text(
-                    state.taskName,
-                    textAlign: TextAlign.start,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontSize: 18,
-                      color: ColorDark.whiteFocus,
-                    ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 17,
+      children: [
+        !state.showTaskDesTextField
+            ? CustomTextField(
+                controller: _taskNameController,
+                focusNode: widget.taskNameFocus,
+                onChange: (value) =>
+                    context.read<TaskManagerCubit>().onTaskNameChange(value),
+                hintText: AppConstants.TASK_NAME,
+                errorText: state.taskNameInput.inputStatusText,
+              )
+            : InkWell(
+                onTap: () =>
+                    context.read<TaskManagerCubit>().showTaskNameInput(),
+                child: Text(
+                  state.taskName.isNotEmpty
+                      ? state.taskName
+                      : AppConstants.TASK_TITLE,
+                  textAlign: TextAlign.start,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontSize: 18,
+                    color: ColorDark.whiteFocus,
                   ),
                 ),
-          !state.showTaskDesTextField
-              ? InkWell(
-                  onTap: () => context.read<TaskManagerCubit>().onCheckTaskName(),
-                  child: Text(
-                    state.taskDes,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontSize: 18,
-                      color: ColorDark.whiteFocus,
-                    ),
+              ),
+        !state.showTaskDesTextField
+            ? InkWell(
+                onTap: () =>
+                    context.read<TaskManagerCubit>().showTaskDescriptionInput(),
+                child: Text(
+                  state.taskDes.isNotEmpty
+                      ? state.taskDes
+                      : AppConstants.DESCRIPTION,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontSize: 18,
+                    color: ColorDark.whiteFocus,
                   ),
-                )
-              : CustomTextField(
-                  controller: _taskDescriptionController,
-                  onChange: (value) => context
-                      .read<TaskManagerCubit>()
-                      .onTaskDescriptionChange(value),
-                  hintText: AppConstants.TASK_DESCRIPTION,
-                  errorText: state.taskDesInput.inputStatusText,
                 ),
-        ],
-      ),
+              )
+            : CustomTextField(
+                controller: _taskDescriptionController,
+                focusNode: widget.taskDesFocus,
+                onChange: (value) => context
+                    .read<TaskManagerCubit>()
+                    .onTaskDescriptionChange(value),
+                hintText: AppConstants.TASK_DESCRIPTION,
+                errorText: state.taskDesInput.inputStatusText,
+              ),
+      ],
     );
   }
 }

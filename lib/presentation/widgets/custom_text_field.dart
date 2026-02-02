@@ -10,6 +10,7 @@ class CustomTextField extends StatelessWidget {
   final bool? isPasswordTextField;
   final Function(String)? onChange;
   final TextEditingController? controller;
+  final FocusNode? focusNode;
 
   const CustomTextField({
     super.key,
@@ -19,6 +20,7 @@ class CustomTextField extends StatelessWidget {
     this.isSearchBar,
     this.controller,
     this.isPasswordTextField,
+    this.focusNode,
   });
 
   @override
@@ -30,6 +32,7 @@ class CustomTextField extends StatelessWidget {
         color: ColorDark.whiteFocus,
       ),
       controller: controller,
+      focusNode: focusNode,
       obscureText: isPasswordTextField ?? false,
       textAlignVertical: TextAlignVertical.center,
       onChanged: (value) => onChange?.call(value),

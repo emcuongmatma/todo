@@ -9,6 +9,7 @@ import 'package:todo/core/utils/toast.dart';
 import 'package:todo/domain/entities/task_entity.dart';
 import 'package:todo/generated/assets.dart';
 import 'package:todo/presentation/cubit/task_manager/task_manager_cubit.dart';
+import 'package:todo/presentation/pages/home/task_detail_screen/component/task_info_item.dart';
 import 'package:todo/presentation/widgets/custom_calendar_dialog.dart';
 import 'package:todo/presentation/widgets/custom_tag_dialog.dart';
 import 'package:todo/presentation/widgets/custom_time_picker_dialog.dart';
@@ -47,7 +48,7 @@ class TaskDetail extends StatelessWidget {
           case TaskManagerEffect.none:
             null;
           case TaskManagerEffect.success:
-            if(context.canPop()) {
+            if (context.canPop()) {
               context.pop();
             }
           case TaskManagerEffect.fail:
@@ -57,7 +58,7 @@ class TaskDetail extends StatelessWidget {
         }
         context.read<TaskManagerCubit>().clearEffect();
       },
-      buildWhen: (pre,cur) => pre.tmpTask != cur.tmpTask,
+      buildWhen: (pre, cur) => pre.tmpTask != cur.tmpTask,
       builder: (context, state) {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 11),
@@ -275,53 +276,6 @@ class TaskDetail extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-}
-
-class TaskInfoItem extends StatelessWidget {
-  final String leadingIcon;
-  final String title;
-  final String info;
-  final String? icon;
-  final VoidCallback onClick;
-
-  const TaskInfoItem({
-    super.key,
-    required this.info,
-    this.icon,
-    required this.title,
-    required this.leadingIcon,
-    required this.onClick,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        SvgPicture.asset(leadingIcon),
-        const SizedBox(width: 8),
-        Text(title, style: Theme.of(context).textTheme.bodyMedium),
-        const Spacer(),
-        InkWell(
-          onTap: onClick,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color: ColorDark.white21,
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: Row(
-              spacing: 10,
-              children: [
-                if (icon != null)
-                  SvgPicture.asset(icon!, width: 24, height: 24),
-                Text(info, style: Theme.of(context).textTheme.bodySmall),
-              ],
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

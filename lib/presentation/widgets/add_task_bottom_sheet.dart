@@ -8,11 +8,10 @@ import 'package:todo/core/theme/colors.dart';
 import 'package:todo/core/utils/toast.dart';
 import 'package:todo/generated/assets.dart';
 import 'package:todo/presentation/cubit/task_manager/task_manager_cubit.dart';
-import 'package:todo/presentation/models/normal_input.dart';
 import 'package:todo/presentation/widgets/custom_calendar_dialog.dart';
 import 'package:todo/presentation/widgets/custom_tag_dialog.dart';
-import 'package:todo/presentation/widgets/custom_text_field.dart';
 import 'package:todo/presentation/widgets/custom_time_picker_dialog.dart';
+import 'package:todo/presentation/widgets/edit_task_title_dialog.dart';
 import 'package:todo/presentation/widgets/task_priority_dialog.dart';
 
 void showAddTaskSheet(BuildContext context) {
@@ -30,8 +29,38 @@ void showAddTaskSheet(BuildContext context) {
   );
 }
 
-class AddTaskBottomSheet extends StatelessWidget {
+class AddTaskBottomSheet extends StatefulWidget {
   const AddTaskBottomSheet({super.key});
+
+  @override
+  State<AddTaskBottomSheet> createState() => _AddTaskBottomSheetState();
+}
+
+class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
+  late final FocusNode taskNameFocus;
+  late final FocusNode taskDesFocus;
+
+  @override
+  void initState() {
+    super.initState();
+    taskNameFocus = FocusNode();
+    taskDesFocus = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    taskNameFocus.dispose();
+    taskDesFocus.dispose();
+    super.dispose();
+  }
+
+  Future<void> clearFocus() async {
+    if (taskNameFocus.hasFocus || taskDesFocus.hasFocus) {
+      taskNameFocus.unfocus();
+      taskDesFocus.unfocus();
+      await Future.delayed(const Duration(milliseconds: 350));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,60 +112,17 @@ class AddTaskBottomSheet extends StatelessWidget {
                       color: ColorDark.whiteFocus,
                     ),
                   ),
-                  !state.showTaskDesTextField
-                      ? CustomTextField(
-                          onChange: (value) => context
-                              .read<TaskManagerCubit>()
-                              .onTaskNameChange(value),
-                          hintText: AppConstants.TASK_NAME,
-                          errorText: state.taskNameInput.inputStatusText,
-                        )
-                      : InkWell(
-                          onTap: () => context
-                              .read<TaskManagerCubit>()
-                              .showTaskNameInput(),
-                          child: Text(
-                            state.taskName,
-                            style: Theme.of(context).textTheme.bodyMedium
-                                ?.copyWith(
-                                  fontSize: 18,
-                                  color: ColorDark.whiteFocus,
-                                ),
-                          ),
-                        ),
-                  !state.showTaskDesTextField
-                      ? InkWell(
-                          onTap: () => context
-                              .read<TaskManagerCubit>()
-                              .onCheckTaskName(),
-                          child: Text(
-                            state.taskDes.isEmpty
-                                ? AppConstants.DESCRIPTION
-                                : state.taskDes,
-                            style: Theme.of(context).textTheme.bodyMedium
-                                ?.copyWith(
-                                  fontSize: 18,
-                                  color: ColorDark.whiteFocus,
-                                ),
-                          ),
-                        )
-                      : CustomTextField(
-                          onChange: (value) => context
-                              .read<TaskManagerCubit>()
-                              .onTaskDescriptionChange(value),
-                          hintText: AppConstants.TASK_DESCRIPTION,
-                          errorText: state.taskDesInput.inputStatusText,
-                        ),
+                  TaskInputSection(
+                    taskNameFocus: taskNameFocus,
+                    taskDesFocus: taskDesFocus,
+                  ),
                   // bottom tool
                   Row(
                     spacing: 24,
                     children: [
                       InkWell(
                         onTap: () async {
-                          FocusManager.instance.primaryFocus?.unfocus();
-                          await Future.delayed(
-                            const Duration(milliseconds: 200),
-                          );
+                          await clearFocus();
                           if (!context.mounted) return;
                           DateTime? selectedDate = await showAppCalendarDialog(
                             context: context,
@@ -167,10 +153,7 @@ class AddTaskBottomSheet extends StatelessWidget {
                       ),
                       InkWell(
                         onTap: () async {
-                          FocusManager.instance.primaryFocus?.unfocus();
-                          await Future.delayed(
-                            const Duration(milliseconds: 200),
-                          );
+                          await clearFocus();
                           if (!context.mounted) return;
                           int? categoryId = await showCategoryPicker(
                             context: context,
@@ -189,10 +172,7 @@ class AddTaskBottomSheet extends StatelessWidget {
                       ),
                       InkWell(
                         onTap: () async {
-                          FocusManager.instance.primaryFocus?.unfocus();
-                          await Future.delayed(
-                            const Duration(milliseconds: 200),
-                          );
+                          await clearFocus();
                           if (!context.mounted) return;
                           debugPrint(state.priority.toString());
                           int? priority = await showTaskPriorityDialog(

@@ -25,7 +25,7 @@ class TaskManagerCubit extends Cubit<TaskManagerState> {
     emit(state.copyWith(taskName: taskName));
   }
 
-  void onCheckTaskName() {
+  void showTaskDescriptionInput() {
     debugPrint(state.taskName);
     final taskNameInput = NormalInput.dirty(state.taskName);
     debugPrint(taskNameInput.isValid.toString());
@@ -38,7 +38,13 @@ class TaskManagerCubit extends Cubit<TaskManagerState> {
   }
 
   void showTaskNameInput() {
-    emit(state.copyWith(showTaskDesTextField: false));
+    final taskDesInput = NormalInput.dirty(state.taskDes);
+    emit(
+      state.copyWith(
+        taskDesInput: taskDesInput,
+        showTaskDesTextField: !taskDesInput.isValid,
+      ),
+    );
   }
 
   void onTaskDescriptionChange(String taskDes) {
@@ -126,7 +132,8 @@ class TaskManagerCubit extends Cubit<TaskManagerState> {
     if (userId == null) return;
     final result = await taskRepository.updateTask(state.tmpTask, userId).run();
     result.fold(
-      (failure) => emit(state.copyWith(effect: TaskManagerEffect.fail, error: failure)),
+      (failure) =>
+          emit(state.copyWith(effect: TaskManagerEffect.fail, error: failure)),
       (task) {
         emit(state.copyWith(effect: TaskManagerEffect.success));
         taskRepository.updateCloudTask(task).run();
@@ -139,7 +146,8 @@ class TaskManagerCubit extends Cubit<TaskManagerState> {
     if (taskId == null) return;
     final result = await taskRepository.deleteTask(taskId).run();
     result.fold(
-      (failure) => emit(state.copyWith(effect: TaskManagerEffect.fail,error: failure)),
+      (failure) =>
+          emit(state.copyWith(effect: TaskManagerEffect.fail, error: failure)),
       (_) {
         emit(state.copyWith(effect: TaskManagerEffect.success));
         final serverId = state.tmpTask?.serverId;
@@ -153,23 +161,30 @@ class TaskManagerCubit extends Cubit<TaskManagerState> {
     final nameInput = NormalInput.dirty(state.taskName);
     final desInput = NormalInput.dirty(state.taskDes);
 
-
     TaskManagerEffect? currentEffect;
     if (!nameInput.isValid || !desInput.isValid) {
-      currentEffect = desInput.isValid ? null : TaskManagerEffect.invalidDescription;
+      currentEffect = desInput.isValid
+          ? null
+          : TaskManagerEffect.invalidDescription;
     } else if (state.selectedDate == null) {
       currentEffect = TaskManagerEffect.invalidDate;
     } else if (state.categoryId == null) {
       currentEffect = TaskManagerEffect.invalidCategory;
     }
 
-    emit(state.copyWith(
-      taskNameInput: nameInput,
-      taskDesInput: desInput,
-      effect: currentEffect,
-    ));
+    emit(
+      state.copyWith(
+        taskNameInput: nameInput,
+        taskDesInput: desInput,
+        effect: currentEffect,
+        showTaskDesTextField: nameInput.isValid && !desInput.isValid
+            ? true
+            : null,
+      ),
+    );
 
-    if (currentEffect != null || !nameInput.isValid || !desInput.isValid) return;
+    if (currentEffect != null || !nameInput.isValid || !desInput.isValid)
+      return;
 
     debugPrint(
       "taskNameInput : ${state.taskNameInput.isValid}, "
@@ -195,7 +210,8 @@ class TaskManagerCubit extends Cubit<TaskManagerState> {
     if (userId == null) return;
     final result = await taskRepository.addTask(newTask, userId).run();
     result.fold(
-      (failure) => emit(state.copyWith(effect: TaskManagerEffect.fail, error: failure)),
+      (failure) =>
+          emit(state.copyWith(effect: TaskManagerEffect.fail, error: failure)),
       (tasks) {
         emit(state.copyWith(effect: TaskManagerEffect.success));
         taskRepository.uploadPendingTasks().run();

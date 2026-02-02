@@ -20,16 +20,14 @@ class MainWrapper extends StatelessWidget {
           onTap: () {},
           child: Padding(
             padding: const EdgeInsets.only(left: 24),
-            child: SvgPicture.asset(Assets.iconsIcFilter,),
+            child: SvgPicture.asset(Assets.iconsIcFilter),
           ),
         ),
         title: Text(
           AppConstants.INDEX,
-          style: Theme
-              .of(context)
-              .textTheme
-              .bodyLarge
-              ?.copyWith(color: ColorDark.whiteFocus),
+          style: Theme.of(
+            context,
+          ).textTheme.bodyLarge?.copyWith(color: ColorDark.whiteFocus),
         ),
         actions: [
           GestureDetector(
@@ -38,22 +36,23 @@ class MainWrapper extends StatelessWidget {
               padding: const EdgeInsets.only(right: 24),
               child: CachedNetworkImage(
                 imageUrl: AppConstants.IMAGE_URL_TEST,
-                imageBuilder: (context, imageProvider) =>
-                    Container(
-                      width: 42,
-                      height: 42,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                            image: imageProvider, fit: BoxFit.cover),
-                      ),
+                imageBuilder: (context, imageProvider) => Container(
+                  width: 42,
+                  height: 42,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      image: imageProvider,
+                      fit: BoxFit.cover,
                     ),
-                placeholder: (context,
-                    url) => const CircularProgressIndicator(),
+                  ),
+                ),
+                placeholder: (context, url) =>
+                    const CircularProgressIndicator(),
                 errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
             ),
-          )
+          ),
         ],
         centerTitle: true,
       ),
@@ -63,14 +62,14 @@ class MainWrapper extends StatelessWidget {
         onPressed: () {
           showAddTaskSheet(context);
         },
+        elevation: 0,
         child: const Icon(Icons.add, color: Colors.white, size: 32),
       ),
 
       bottomNavigationBar: BottomAppBar(
         padding: const EdgeInsets.only(right: 20, left: 20, top: 12),
         color: ColorDark.bottomNavigationBackground,
-        shape: const CircularNotchedRectangle(),
-        notchMargin: 0.0,
+        shape: null,
         child: Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
