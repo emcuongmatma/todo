@@ -14,6 +14,8 @@ abstract class AuthRepository {
 
   TaskEither<Failure, Map<String,dynamic>> signUp(String id, String password);
 
+  AuthenticationStatus getInitialStatus();
+
   int? getUserId();
 
   Future<void> logOut();

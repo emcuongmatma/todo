@@ -15,28 +15,30 @@ import 'package:todo/presentation/cubit/auth/auth_cubit.dart';
 class AuthRepositoryImpl extends AuthRepository {
   final AuthRemoteDataSource authRemoteDataSource;
   final AuthLocalDataSource authLocalDataSource;
+  final _controller = BehaviorSubject<AuthenticationStatus>();
 
   AuthRepositoryImpl({
     required this.authRemoteDataSource,
     required this.authLocalDataSource,
-  }) {
-    _controller.add(
-      getUserId() != null
-          ? AuthenticationStatus.authenticated
-          : AuthenticationStatus.unauthenticated,
-    );
-  }
+  });
 
-  final _controller = BehaviorSubject<AuthenticationStatus>();
+
 
   @override
   Stream<AuthenticationStatus> get status => _controller.asBroadcastStream();
 
   @override
+  AuthenticationStatus getInitialStatus() {
+    return getUserId() != null
+        ? AuthenticationStatus.authenticated
+        : AuthenticationStatus.unauthenticated;
+  }
+
+  @override
   TaskEither<Failure, UserEntity> login(String username, String password) {
     return TaskEither<Failure, List<dynamic>>.tryCatch(
-      () async => await authRemoteDataSource.login(username),
-      (error, _) {
+          () async => await authRemoteDataSource.login(username),
+          (error, _) {
         if (error is AuthFailure) return error;
         return NetworkFailure(error.toString());
       },
@@ -78,13 +80,11 @@ class AuthRepositoryImpl extends AuthRepository {
   void dispose() => _controller.close();
 
   @override
-  TaskEither<Failure, Map<String, dynamic>> signUp(
-    String username,
-    String password,
-  ) {
+  TaskEither<Failure, Map<String, dynamic>> signUp(String username,
+      String password,) {
     return TaskEither<Failure, Map<String, dynamic>>.tryCatch(
-      () async => await authRemoteDataSource.signUp(username, password),
-      (error, _) {
+          () async => await authRemoteDataSource.signUp(username, password),
+          (error, _) {
         if (error is AuthFailure) return error;
         return NetworkFailure(error.toString());
       },

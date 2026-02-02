@@ -13,7 +13,12 @@ class AuthCubit extends Cubit<AuthState> {
   AuthRepository authRepository;
   StreamSubscription? _getAuthStatus;
 
-  AuthCubit({required this.authRepository}) : super(const AuthState());
+  AuthCubit({required this.authRepository})
+    : super(
+        AuthState(
+          status: authRepository.getInitialStatus()
+        ),
+      );
 
   void init() {
     if (_getAuthStatus != null) return;
