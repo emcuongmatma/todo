@@ -14,6 +14,7 @@ class TaskManagerState extends Equatable {
   final int? categoryId;
   final TaskManagerEffect effect;
   final TaskEntity? tmpTask;
+  final Failure? error;
   const TaskManagerState({
     this.taskName = '',
     this.taskDes = '',
@@ -26,6 +27,7 @@ class TaskManagerState extends Equatable {
     this.categoryId,
     this.effect = TaskManagerEffect.none,
     this.tmpTask,
+    this.error
   });
 
   TaskManagerState copyWith({
@@ -39,7 +41,8 @@ class TaskManagerState extends Equatable {
     int? priority,
     int? categoryId,
     TaskManagerEffect? effect,
-    TaskEntity? tmpTask
+    TaskEntity? tmpTask,
+    Failure? error
   }) {
     return TaskManagerState(
       taskName: taskName ?? this.taskName,
@@ -52,7 +55,8 @@ class TaskManagerState extends Equatable {
       selectedTime: selectedTime ?? this.selectedTime,
       categoryId: categoryId ?? this.categoryId,
       effect: effect ?? this.effect,
-      tmpTask: tmpTask ?? this.tmpTask
+      tmpTask: tmpTask ?? this.tmpTask,
+      error: error ?? this.error
     );
   }
 
@@ -68,6 +72,7 @@ class TaskManagerState extends Equatable {
     selectedTime,
     categoryId,
     effect,
-    tmpTask
+    tmpTask,
+    error
   ];
 }

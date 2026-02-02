@@ -20,6 +20,10 @@ class IndexScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TaskCubit, TaskState>(
+      buildWhen: (pre, cur) =>
+          pre.listTask1 != cur.listTask1 ||
+          pre.listTask2 != cur.listTask2 ||
+          pre.searchKey != cur.searchKey,
       builder: (context, state) {
         if (state.listTask1.isEmpty &&
             state.listTask2.isEmpty &&
@@ -184,7 +188,10 @@ class TaskFilterSection extends StatelessWidget {
             return InkWell(
               onTap: () {
                 debugPrint(item.dateTime.toString());
-                context.pushNamed(AppRouteName.TASK_DETAIL_ROUTE_NAME,extra: item);
+                context.pushNamed(
+                  AppRouteName.TASK_DETAIL_ROUTE_NAME,
+                  extra: item,
+                );
               },
               child: Container(
                 margin: const EdgeInsetsGeometry.only(top: 16),
@@ -203,7 +210,10 @@ class TaskFilterSection extends StatelessWidget {
                     Checkbox(
                       value: item.isCompleted,
                       shape: const CircleBorder(),
-                      visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+                      visualDensity: const VisualDensity(
+                        horizontal: -4,
+                        vertical: -4,
+                      ),
                       side: const BorderSide(
                         color: ColorDark.whiteFocus,
                         width: 1.5,
@@ -211,7 +221,7 @@ class TaskFilterSection extends StatelessWidget {
                       onChanged: (val) {},
                     ),
                     const SizedBox(width: 12),
-              
+
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -224,7 +234,7 @@ class TaskFilterSection extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                           ),
                           const SizedBox(height: 6),
-              
+
                           // time
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -241,7 +251,7 @@ class TaskFilterSection extends StatelessWidget {
                                       ),
                                 ),
                               ),
-              
+
                               //Category & Priority
                               Flexible(
                                 flex: 2,
@@ -249,8 +259,12 @@ class TaskFilterSection extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   spacing: 12,
                                   children: [
-                                    CategoryItemBuilder(category: item.category),
-                                    PriorityItemBuilder(priority: item.priority),
+                                    CategoryItemBuilder(
+                                      category: item.category,
+                                    ),
+                                    PriorityItemBuilder(
+                                      priority: item.priority,
+                                    ),
                                   ],
                                 ),
                               ),

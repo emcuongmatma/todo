@@ -28,10 +28,15 @@ class LoginScreen extends StatelessWidget {
             case AuthScreenEffect.none:
               null;
             case AuthScreenEffect.error:
-              showToast(msg: state.error?.message, isLong: true);
+              showToast(msg: state.error?.message, isLong: false);
           }
           context.read<AuthCubit>().clearEffect();
         },
+        buildWhen: (pre, cur) =>
+            pre.isValid != cur.isValid ||
+            pre.isLoading != cur.isLoading ||
+            pre.usernameInput != cur.usernameInput ||
+            pre.passwordInput != cur.passwordInput,
         builder: (context, state) {
           return LoadingWrapper(
             isLoading: state.isLoading,

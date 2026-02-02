@@ -35,12 +35,19 @@ class SignUpScreen extends StatelessWidget {
             case AuthScreenEffect.none:
               null;
             case AuthScreenEffect.success:
-              showToast(msg: AppConstants.REGISTER_SUCCESS, isLong: true);
+              showToast(msg: AppConstants.REGISTER_SUCCESS, isLong: false);
+              if (context.canPop()) context.pop();
             case AuthScreenEffect.error:
-              showToast(msg: state.error?.message, isLong: true);
+              showToast(msg: state.error?.message, isLong: false);
           }
           context.read<AuthCubit>().clearEffect();
         },
+        buildWhen: (pre, cur) =>
+            pre.isValid != cur.isValid ||
+            pre.isLoading != cur.isLoading ||
+            pre.usernameInput != cur.usernameInput ||
+            pre.passwordInput != cur.passwordInput ||
+            pre.confirmPasswordInput != cur.confirmPasswordInput,
         builder: (context, state) {
           return LoadingWrapper(
             isLoading: state.isLoading,

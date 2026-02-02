@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:todo/core/error/failure.dart';
 import 'package:todo/domain/entities/task_entity.dart';
 import 'package:todo/domain/repositories/auth_repository.dart';
 import 'package:todo/domain/repositories/category_repository.dart';
@@ -125,7 +126,7 @@ class TaskManagerCubit extends Cubit<TaskManagerState> {
     if (userId == null) return;
     final result = await taskRepository.updateTask(state.tmpTask, userId).run();
     result.fold(
-      (failure) => emit(state.copyWith(effect: TaskManagerEffect.fail)),
+      (failure) => emit(state.copyWith(effect: TaskManagerEffect.fail, error: failure)),
       (task) {
         emit(state.copyWith(effect: TaskManagerEffect.success));
         taskRepository.updateCloudTask(task).run();
@@ -138,7 +139,7 @@ class TaskManagerCubit extends Cubit<TaskManagerState> {
     if (taskId == null) return;
     final result = await taskRepository.deleteTask(taskId).run();
     result.fold(
-      (failure) => emit(state.copyWith(effect: TaskManagerEffect.fail)),
+      (failure) => emit(state.copyWith(effect: TaskManagerEffect.fail,error: failure)),
       (_) {
         emit(state.copyWith(effect: TaskManagerEffect.success));
         final serverId = state.tmpTask?.serverId;
@@ -194,7 +195,7 @@ class TaskManagerCubit extends Cubit<TaskManagerState> {
     if (userId == null) return;
     final result = await taskRepository.addTask(newTask, userId).run();
     result.fold(
-      (failure) => emit(state.copyWith(effect: TaskManagerEffect.fail)),
+      (failure) => emit(state.copyWith(effect: TaskManagerEffect.fail, error: failure)),
       (tasks) {
         emit(state.copyWith(effect: TaskManagerEffect.success));
         taskRepository.uploadPendingTasks().run();

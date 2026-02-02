@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:todo/core/constants/app_constants.dart';
 import 'package:todo/core/di/injection.dart';
 import 'package:todo/core/theme/colors.dart';
+import 'package:todo/core/utils/toast.dart';
 import 'package:todo/domain/entities/task_entity.dart';
 import 'package:todo/generated/assets.dart';
 import 'package:todo/presentation/cubit/task_manager/task_manager_cubit.dart';
@@ -42,21 +43,21 @@ class TaskDetail extends StatelessWidget {
     return BlocConsumer<TaskManagerCubit, TaskManagerState>(
       listenWhen: (previous, current) => previous.effect != current.effect,
       listener: (context, state) {
-        // switch (state.effect) {
-        //   case AddTaskEffect.none:
-        //     null;
-        //   case AddTaskEffect.invalidDate:
-        //     showToast(msg: AppConstants.PLEASE_SELECT_DATE);
-        //     context.read<AddTaskCubit>().clearEffect();
-        //   case AddTaskEffect.invalidCategory:
-        //     showToast(msg: AppConstants.PLEASE_SELECT_CATEGORY);
-        //     context.read<AddTaskCubit>().clearEffect();
-        //   case AddTaskEffect.success:
-        //     if(context.canPop()) {
-        //       context.pop();
-        //     }
-        // }
+        switch (state.effect) {
+          case TaskManagerEffect.none:
+            null;
+          case TaskManagerEffect.success:
+            if(context.canPop()) {
+              context.pop();
+            }
+          case TaskManagerEffect.fail:
+            showToast(msg: state.error?.message);
+          default:
+            null;
+        }
+        context.read<TaskManagerCubit>().clearEffect();
       },
+      buildWhen: (pre,cur) => pre.tmpTask != cur.tmpTask,
       builder: (context, state) {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 11),
@@ -260,7 +261,6 @@ class TaskDetail extends StatelessWidget {
                   onPressed: () {
                     debugPrint("${state.tmpTask?.id}");
                     context.read<TaskManagerCubit>().updateTask();
-                    if (context.canPop()) context.pop();
                   },
                   child: Text(
                     AppConstants.EDIT_TASK,
