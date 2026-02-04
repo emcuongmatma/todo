@@ -22,18 +22,6 @@ class DioClient {
         responseBody: true,
       ),
     );
-    //
-    // dio.interceptors.add(
-    //   InterceptorsWrapper(
-    //     onRequest: (options, handler) {
-    //       final userId = authLocalDataSource.getUserId();
-    //       if (userId != null) {
-    //         options.queryParameters['id'] = userId;
-    //       }
-    //       return handler.next(options);
-    //     },
-    //   ),
-    // );
 
     return dio;
   }

@@ -183,8 +183,9 @@ class TaskManagerCubit extends Cubit<TaskManagerState> {
       ),
     );
 
-    if (currentEffect != null || !nameInput.isValid || !desInput.isValid)
+    if (currentEffect != null || !nameInput.isValid || !desInput.isValid) {
       return;
+    }
 
     debugPrint(
       "taskNameInput : ${state.taskNameInput.isValid}, "
@@ -212,7 +213,7 @@ class TaskManagerCubit extends Cubit<TaskManagerState> {
     result.fold(
       (failure) =>
           emit(state.copyWith(effect: TaskManagerEffect.fail, error: failure)),
-      (tasks) {
+      (_) {
         emit(state.copyWith(effect: TaskManagerEffect.success));
         taskRepository.uploadPendingTasks().run();
       },

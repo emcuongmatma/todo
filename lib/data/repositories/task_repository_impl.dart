@@ -117,7 +117,6 @@ class TaskRepositoryImpl implements TaskRepository {
       //update task local
       () async {
         await _taskLocal.saveTask(taskModel);
-        updateCloudTask(taskModel).run();
         return taskModel;
       },
       (error, _) => DatabaseFailure(error.toString()),

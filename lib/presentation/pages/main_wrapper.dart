@@ -24,7 +24,13 @@ class MainWrapper extends StatelessWidget {
           ),
         ),
         title: Text(
-          AppConstants.INDEX,
+          switch(navigationShell.currentIndex) {
+            0 => AppConstants.INDEX,
+            1 => AppConstants.CALENDAR,
+            2 => AppConstants.FOCUSE,
+            3 => AppConstants.PROFILE,
+            _ => AppConstants.UNDEFINED,
+          },
           style: Theme.of(
             context,
           ).textTheme.bodyLarge?.copyWith(color: ColorDark.whiteFocus),

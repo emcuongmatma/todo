@@ -38,6 +38,7 @@ class _CustomCalendarState extends State<CustomCalendar> {
       firstDay: DateTime(2000, 1, 1),
       lastDay: DateTime(2100, 1, 1),
       focusedDay: _focusedDay,
+      sixWeekMonthsEnforced: true,
       calendarBuilders: CalendarBuilders(
         outsideBuilder: (context, day, focusedDay) {
           return _buildDayCell(day, textColor: ColorDark.gray);

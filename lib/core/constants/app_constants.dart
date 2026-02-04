@@ -64,6 +64,6 @@ class API {
 
   // Authentication
   static const AUTH = '$BASE_URL/auth';
-  //Profile
+  //Tasks
   static const TASK = '$BASE_URL/tasks';
 }
