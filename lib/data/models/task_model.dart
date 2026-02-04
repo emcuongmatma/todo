@@ -51,7 +51,7 @@ class TaskModel {
       ..userId = int.tryParse(json['userId']?.toString() ?? '0') ?? 0
       ..title = json['title'] ?? ''
       ..description = json['description'] ?? ''
-      ..dateTime = DateTime.now()
+      ..dateTime = DateTime.tryParse(json['dateTime']?.toString() ?? "") ?? DateTime.now()
       ..priority = json['priority'] ?? 0
       ..categoryId = json['categoryId'] ?? 0
       ..isCompleted = json['isCompleted'] ?? false
