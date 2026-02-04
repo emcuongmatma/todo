@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:todo/core/constants/key.dart';
 import 'package:todo/domain/entities/task_entity.dart';
 import 'package:todo/domain/repositories/auth_repository.dart';
@@ -15,82 +16,57 @@ class TaskCubit extends Cubit<TaskState> {
   final AuthRepository _authRepository;
   StreamSubscription? _taskSubscriptionFilter1;
   StreamSubscription? _taskSubscriptionFilter2;
+  final _searchController = BehaviorSubject<String?>();
 
   TaskCubit({
     required TaskRepository repository,
     required AuthRepository authRepository,
   }) : _repository = repository,
        _authRepository = authRepository,
-       super(const TaskState());
+       super(const TaskState()) {
+    _searchController
+        .debounceTime(const Duration(milliseconds: 200))
+        .distinct()
+        .listen((searchKey) {
+          _initList1(searchKey: searchKey, filterKey: state.filterKey1);
+          _initList2(searchKey: searchKey, filterKey: state.filterKey2);
+        });
+    init();
+  }
 
   void init() {
-    final filter1 = _mapToDate(state.filterKey1);
-    final filter2 = _mapToBool(state.filterKey2);
-    _taskSubscriptionFilter1 = _repository
-        .getTaskByFilter(date: filter1)
-        .listen(
-          (tasks) {
-            if (tasks.isEmpty) {
-              emit(state.copyWith(listTask1: []));
-            } else {
-              emit(state.copyWith(listTask1: tasks));
-            }
-          },
-          onError: (error) {
-            // emit(TaskState(message: error.toString()));
-          },
-        );
-    _taskSubscriptionFilter2 = _repository
-        .getTaskByFilter(isCompleted: filter2)
-        .listen(
-          (tasks) {
-            if (tasks.isEmpty) {
-              emit(state.copyWith(listTask2: []));
-            } else {
-              emit(state.copyWith(listTask2: tasks));
-            }
-          },
-          onError: (error) {
-            // emit(TaskState(message: error.toString()));
-          },
-        );
+    _initList1(filterKey: state.filterKey1);
+    _initList2(filterKey: state.filterKey2);
   }
 
-  void reloadList1() {
+  void _initList1({String? searchKey, String? filterKey}) {
     _taskSubscriptionFilter1?.cancel();
-    final filter1 = _mapToDate(state.filterKey1);
+
+    final key = filterKey ?? state.filterKey1;
+    final date = _mapToDate(key);
+
     _taskSubscriptionFilter1 = _repository
-        .getTaskByFilter(searchKey: state.searchKey, date: filter1)
+        .getTaskByFilter(searchKey: searchKey ?? state.searchKey, date: date)
         .listen(
-          (tasks) {
-            if (tasks.isEmpty) {
-              emit(state.copyWith(listTask1: []));
-            } else {
-              emit(state.copyWith(listTask1: tasks));
-            }
-          },
-          onError: (error) {
-            // emit(TaskState(message: error.toString()));
-          },
+          (tasks) => emit(state.copyWith(listTask1: tasks)),
+          onError: (e) => debugPrint(e.toString()),
         );
   }
 
-  void reloadList2() {
+  void _initList2({String? searchKey, String? filterKey}) {
     _taskSubscriptionFilter2?.cancel();
-    final filter2 = _mapToBool(state.filterKey2);
+
+    final key = filterKey ?? state.filterKey2;
+    final isCompleted = _mapToBool(key);
+
     _taskSubscriptionFilter2 = _repository
-        .getTaskByFilter(searchKey: state.searchKey, isCompleted: filter2)
+        .getTaskByFilter(
+          searchKey: searchKey ?? state.searchKey,
+          isCompleted: isCompleted,
+        )
         .listen(
-          (tasks) {
-            if (tasks.isEmpty) {
-              emit(state.copyWith(listTask2: []));
-            } else {
-              emit(state.copyWith(listTask2: tasks));
-            }
-          },
-          onError: (error) {
-            // emit(TaskState(message: error.toString()));
-          },
+          (tasks) => emit(state.copyWith(listTask2: tasks)),
+          onError: (e) => debugPrint(e.toString()),
         );
   }
 
@@ -103,13 +79,11 @@ class TaskCubit extends Cubit<TaskState> {
       ),
     );
     if (searchKey != null) {
-      debugPrint("reaload");
-      reloadList1();
-      reloadList2();
-      return;
+      _searchController.add(searchKey);
     }
-    if (filter1 != null) reloadList1();
-    if (filter2 != null) reloadList2();
+
+    if (filter1 != null) _initList1(filterKey: filter1);
+    if (filter2 != null) _initList2(filterKey: filter2);
   }
 
   DateTime? _mapToDate(String key) {
@@ -139,6 +113,7 @@ class TaskCubit extends Cubit<TaskState> {
 
   @override
   Future<void> close() {
+    _searchController.close();
     _taskSubscriptionFilter1?.cancel();
     _taskSubscriptionFilter2?.cancel();
     return super.close();

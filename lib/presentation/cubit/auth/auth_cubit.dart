@@ -14,10 +14,7 @@ class AuthCubit extends Cubit<AuthState> {
   StreamSubscription? _getAuthStatus;
 
   AuthCubit({required this.authRepository})
-    : super(AuthState(status: authRepository.getInitialStatus()));
-
-  void init() {
-    if (_getAuthStatus != null) return;
+    : super(AuthState(status: authRepository.getInitialStatus())) {
     _getAuthStatus = authRepository.status.listen(
       (status) {
         emit(state.copyWith(status: status));

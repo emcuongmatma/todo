@@ -16,21 +16,16 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   static final _router = AppRouter.router;
+
   @override
   Widget build(BuildContext context) {
-
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (_) => di.sl<AuthCubit>()..init(),
-        ),
-        BlocProvider(
-          create: (_) => di.sl<CategoryCubit>()..getAllCategory(),
-        ),
-        BlocProvider(
-          create: (_) => di.sl<TaskCubit>()..init(),
-        ),
+        BlocProvider(create: (_) => di.sl<AuthCubit>()),
+        BlocProvider(create: (_) => di.sl<CategoryCubit>()..getAllCategory()),
+        BlocProvider(create: (_) => di.sl<TaskCubit>()),
       ],
       child: MaterialApp.router(
         title: 'Todo App',

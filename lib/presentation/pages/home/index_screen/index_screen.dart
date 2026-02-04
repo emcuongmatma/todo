@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo/core/constants/app_constants.dart';
@@ -53,18 +52,13 @@ class IndexScreen extends StatelessWidget {
         } else {
           final listTask1 = state.listTask1;
           final listTask2 = state.listTask2;
-          Timer? debounce;
           return Padding(
             padding: const EdgeInsets.only(top: 16.0, right: 24.0, left: 24.0),
             child: Column(
               children: [
                 CustomTextField(
-                  onChange: (value) {
-                    if (debounce?.isActive ?? false) debounce!.cancel();
-                    debounce = Timer(const Duration(milliseconds: 200), () {
-                      context.read<TaskCubit>().updateFilter(searchKey: value);
-                    });
-                  },
+                  onChange: (value) =>
+                      context.read<TaskCubit>().updateFilter(searchKey: value),
                   hintText: AppConstants.SEARCH_FOR_YOUR_TASK,
                   isSearchBar: true,
                 ),
