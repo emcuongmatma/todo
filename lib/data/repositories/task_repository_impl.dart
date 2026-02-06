@@ -145,10 +145,10 @@ class TaskRepositoryImpl implements TaskRepository {
   }
 
   @override
-  TaskEither<Failure, void> deleteTask(int taskId) {
+  TaskEither<Failure, Unit> deleteTask(int taskId) {
     debugPrint("updateCloudStart");
-    return TaskEither<Failure, void>.tryCatch(
-      () async => await _taskLocal.deleteTask(taskId),
+    return TaskEither<Failure, Unit>.tryCatch(
+      () async => await _taskLocal.deleteTask(taskId).then((_) => unit),
       (error, _) => DatabaseFailure(error.toString()),
     );
   }

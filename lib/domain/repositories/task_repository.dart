@@ -22,7 +22,7 @@ abstract class TaskRepository {
 
   TaskEither<Failure, Unit> updateCloudTask(TaskModel task);
 
-  TaskEither<Failure, void> deleteTask(int taskId);
+  TaskEither<Failure, Unit> deleteTask(int taskId);
 
   TaskEither<Failure, Unit> deleteCloudTask(String serverId);
 }

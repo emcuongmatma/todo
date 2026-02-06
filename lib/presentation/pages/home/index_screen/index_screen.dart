@@ -52,52 +52,55 @@ class IndexScreen extends StatelessWidget {
         } else {
           final listTask1 = state.listTask1;
           final listTask2 = state.listTask2;
-          return Padding(
-            padding: const EdgeInsets.only(top: 16.0, right: 24.0, left: 24.0),
-            child: Column(
-              children: [
-                CustomTextField(
-                  onChange: (value) =>
-                      context.read<TaskCubit>().updateFilter(searchKey: value),
-                  hintText: AppConstants.SEARCH_FOR_YOUR_TASK,
-                  isSearchBar: true,
-                ),
-                const SizedBox(height: 20),
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        TaskFilterSection(
-                          selectedFilter: InitialData.menuItem1.firstWhere(
-                            (item) => item.key == state.filterKey1,
+          return GestureDetector(
+            onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 16.0, right: 24.0, left: 24.0),
+              child: Column(
+                children: [
+                  CustomTextField(
+                    onChange: (value) =>
+                        context.read<TaskCubit>().updateFilter(searchKey: value),
+                    hintText: AppConstants.SEARCH_FOR_YOUR_TASK,
+                    isSearchBar: true,
+                  ),
+                  const SizedBox(height: 20),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          TaskFilterSection(
+                            selectedFilter: InitialData.menuItem1.firstWhere(
+                              (item) => item.key == state.filterKey1,
+                            ),
+                            tasks: listTask1,
+                            menu: InitialData.menuItem1,
+                            onFilterChange: (value) {
+                              context.read<TaskCubit>().updateFilter(
+                                filter1: value,
+                              );
+                            },
                           ),
-                          tasks: listTask1,
-                          menu: InitialData.menuItem1,
-                          onFilterChange: (value) {
-                            context.read<TaskCubit>().updateFilter(
-                              filter1: value,
-                            );
-                          },
-                        ),
-                        const SizedBox(height: 20),
-                        TaskFilterSection(
-                          selectedFilter: InitialData.menuItem2.firstWhere(
-                            (item) => item.key == state.filterKey2,
+                          const SizedBox(height: 20),
+                          TaskFilterSection(
+                            selectedFilter: InitialData.menuItem2.firstWhere(
+                              (item) => item.key == state.filterKey2,
+                            ),
+                            tasks: listTask2,
+                            menu: InitialData.menuItem2,
+                            onFilterChange: (value) {
+                              context.read<TaskCubit>().updateFilter(
+                                filter2: value,
+                              );
+                            },
                           ),
-                          tasks: listTask2,
-                          menu: InitialData.menuItem2,
-                          onFilterChange: (value) {
-                            context.read<TaskCubit>().updateFilter(
-                              filter2: value,
-                            );
-                          },
-                        ),
-                        const SizedBox(height: 20),
-                      ],
+                          const SizedBox(height: 20),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
         }

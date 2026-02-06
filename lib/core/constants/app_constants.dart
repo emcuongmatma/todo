@@ -1,4 +1,5 @@
 class AppConstants {
+  static const String APP_NAME = "Todo App";
   static const String LOGIN = "Login";
   static const String USERNAME = "Username";
   static const String PASSWORD = "Password";
