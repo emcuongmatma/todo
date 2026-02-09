@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:todo/core/constants/app_constants.dart';
 import 'package:todo/core/utils/toast.dart';
+import 'package:todo/i18n/strings.g.dart';
 import 'package:todo/presentation/cubit/auth/auth_cubit.dart';
 import 'package:todo/presentation/models/normal_input.dart';
 import 'package:todo/presentation/widgets/custom_text_field.dart';
@@ -35,7 +35,7 @@ class SignUpScreen extends StatelessWidget {
             case AuthScreenEffect.none:
               null;
             case AuthScreenEffect.success:
-              showToast(msg: AppConstants.REGISTER_SUCCESS, isLong: false);
+              showToast(msg: t.register_success, isLong: false);
               if (context.canPop()) context.pop();
             case AuthScreenEffect.error:
               showToast(msg: state.error?.message, isLong: false);
@@ -67,14 +67,14 @@ class SignUpScreen extends StatelessWidget {
                             children: [
                               const SizedBox(height: 16),
                               Text(
-                                AppConstants.REGISTER,
+                                t.register,
                                 style: Theme.of(
                                   context,
                                 ).textTheme.headlineLarge,
                               ),
                               const SizedBox(height: 53),
                               Text(
-                                AppConstants.USERNAME,
+                                t.username,
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
                               const SizedBox(height: 8),
@@ -85,12 +85,12 @@ class SignUpScreen extends StatelessWidget {
                                     validConfirmPassword: true,
                                   ),
                                 },
-                                hintText: AppConstants.ENTER_YOUR_USERNAME,
+                                hintText: t.enter_your_username,
                                 errorText: state.usernameInput.inputStatusText,
                               ),
                               const SizedBox(height: 25),
                               Text(
-                                AppConstants.PASSWORD,
+                                t.password,
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
                               const SizedBox(height: 8),
@@ -101,13 +101,13 @@ class SignUpScreen extends StatelessWidget {
                                     validConfirmPassword: true,
                                   ),
                                 },
-                                hintText: AppConstants.ENTER_YOUR_PASSWORD,
+                                hintText: t.enter_your_password,
                                 isPasswordTextField: true,
                                 errorText: state.passwordInput.inputStatusText,
                               ),
                               const SizedBox(height: 25),
                               Text(
-                                AppConstants.CONFIRM_PASSWORD,
+                                t.confirm_password,
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
                               const SizedBox(height: 8),
@@ -120,7 +120,7 @@ class SignUpScreen extends StatelessWidget {
                                         validConfirmPassword: true,
                                       ),
                                 },
-                                hintText: AppConstants.ENTER_YOUR_PASSWORD,
+                                hintText: t.enter_your_password,
                                 isPasswordTextField: true,
                                 errorText:
                                     state.confirmPasswordInput.inputStatusText,
@@ -135,7 +135,7 @@ class SignUpScreen extends StatelessWidget {
                                         }
                                       : null,
                                   child: Text(
-                                    AppConstants.REGISTER,
+                                    t.register,
                                     textAlign: TextAlign.center,
                                     style: Theme.of(context)
                                         .textTheme
@@ -148,8 +148,8 @@ class SignUpScreen extends StatelessWidget {
                               Align(
                                 alignment: AlignmentGeometry.bottomCenter,
                                 child: TextSpanWithAction(
-                                  text1: AppConstants.ALREADY_HAVE_ACCOUNT,
-                                  text2: AppConstants.LOGIN,
+                                  text1: t.already_have_account,
+                                  text2: t.login,
                                   onAction: () {
                                     context.read<AuthCubit>().resetInputState();
                                     if (context.canPop()) context.pop();

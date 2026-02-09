@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:todo/core/constants/app_constants.dart';
 import 'package:todo/core/di/injection.dart';
 import 'package:todo/core/theme/colors.dart';
 import 'package:todo/core/utils/toast.dart';
 import 'package:todo/generated/assets.dart';
+import 'package:todo/i18n/strings.g.dart';
 import 'package:todo/presentation/cubit/task_manager/task_manager_cubit.dart';
 import 'package:todo/presentation/widgets/custom_calendar_dialog.dart';
 import 'package:todo/presentation/widgets/custom_tag_dialog.dart';
@@ -71,11 +71,11 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
           case TaskManagerEffect.none:
             null;
           case TaskManagerEffect.invalidDate:
-            showToast(msg: AppConstants.PLEASE_SELECT_DATE);
+            showToast(msg: t.please_select_date);
           case TaskManagerEffect.invalidCategory:
-            showToast(msg: AppConstants.PLEASE_SELECT_CATEGORY);
+            showToast(msg: t.please_select_category);
           case TaskManagerEffect.invalidDescription:
-            showToast(msg: AppConstants.PLEASE_INPUT_DESCRIPTION);
+            showToast(msg: t.please_input_description);
           case TaskManagerEffect.success:
             if (context.canPop()) {
               context.pop();
@@ -107,7 +107,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    AppConstants.ADD_TASK,
+                    t.add_task,
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                       color: ColorDark.whiteFocus,
                     ),

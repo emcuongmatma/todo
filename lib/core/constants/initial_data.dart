@@ -1,94 +1,89 @@
-import 'package:todo/core/constants/app_constants.dart';
 import 'package:todo/core/constants/key.dart';
 import 'package:todo/domain/entities/category_entity.dart';
 import 'package:todo/generated/assets.dart';
+import 'package:todo/i18n/strings.g.dart';
 
 class InitialData {
-  static List<CategoryEntity> get categories =>
-      [
-        CategoryEntity(
-          id: 1,
-          name: "Grocery",
-          icon: Assets.iconsIcGrocery,
-          backgroundColor: "#CCFF80",
-        ),
-        CategoryEntity(
-          id: 2,
-          name: "Work",
-          icon: Assets.iconsIcWork,
-          backgroundColor: "#FF9680",
-        ),
-        CategoryEntity(
-          id: 3,
-          name: "Sport",
-          icon: Assets.iconsIcSport,
-          backgroundColor: "#80FFFF",
-        ),
-        CategoryEntity(
-          id: 4,
-          name: "Design",
-          icon: Assets.iconsIcDesign,
-          backgroundColor: "#80FFD9",
-        ),
-        CategoryEntity(
-          id: 5,
-          name: "University",
-          icon: Assets.iconsIcUniversity,
-          backgroundColor: "#809CFF",
-        ),
-        CategoryEntity(
-          id: 6,
-          name: "Social",
-          icon: Assets.iconsIcSocial,
-          backgroundColor: "#FF80EB",
-        ),
-        CategoryEntity(
-          id: 7,
-          name: "Music",
-          icon: Assets.iconsIcMusic,
-          backgroundColor: "#FC80FF",
-        ),
-        CategoryEntity(
-          id: 8,
-          name: "Health",
-          icon: Assets.iconsIcHealth,
-          backgroundColor: "#80FFA3",
-        ),
-        CategoryEntity(
-          id: 9,
-          name: "Movie",
-          icon: Assets.iconsIcMovie,
-          backgroundColor: "#80D1FF",
-        ),
-        CategoryEntity(
-          id: 10,
-          name: "Home",
-          icon: Assets.iconsIcHome1,
-          backgroundColor: "#FF8080",
-        ),
-      ];
+  static List<CategoryEntity> get categories => [
+    CategoryEntity(
+      id: 1,
+      name: t.categories.grocery,
+      icon: Assets.iconsIcGrocery,
+      backgroundColor: "#CCFF80",
+    ),
+    CategoryEntity(
+      id: 2,
+      name: t.categories.work,
+      icon: Assets.iconsIcWork,
+      backgroundColor: "#FF9680",
+    ),
+    CategoryEntity(
+      id: 3,
+      name: t.categories.sport,
+      icon: Assets.iconsIcSport,
+      backgroundColor: "#80FFFF",
+    ),
+    CategoryEntity(
+      id: 4,
+      name: t.categories.design,
+      icon: Assets.iconsIcDesign,
+      backgroundColor: "#80FFD9",
+    ),
+    CategoryEntity(
+      id: 5,
+      name: t.categories.university,
+      icon: Assets.iconsIcUniversity,
+      backgroundColor: "#809CFF",
+    ),
+    CategoryEntity(
+      id: 6,
+      name: t.categories.social,
+      icon: Assets.iconsIcSocial,
+      backgroundColor: "#FF80EB",
+    ),
+    CategoryEntity(
+      id: 7,
+      name: t.categories.music,
+      icon: Assets.iconsIcMusic,
+      backgroundColor: "#FC80FF",
+    ),
+    CategoryEntity(
+      id: 8,
+      name: t.categories.health,
+      icon: Assets.iconsIcHealth,
+      backgroundColor: "#80FFA3",
+    ),
+    CategoryEntity(
+      id: 9,
+      name: t.categories.movie,
+      icon: Assets.iconsIcMovie,
+      backgroundColor: "#80D1FF",
+    ),
+    CategoryEntity(
+      id: 10,
+      name: t.categories.home,
+      icon: Assets.iconsIcHome1,
+      backgroundColor: "#FF8080",
+    ),
+  ];
 
-  static CategoryEntity get createCategoryItem =>
-      CategoryEntity(
-        id: 0,
-        name: AppConstants.CREATE_NEW,
-        icon: Assets.iconsIcCreate,
-        backgroundColor: "#80FFD1",
-      );
+  static CategoryEntity get createCategoryItem => CategoryEntity(
+    id: 0,
+    name: t.create_new,
+    icon: Assets.iconsIcCreate,
+    backgroundColor: "#80FFD1",
+  );
+
   static List<MenuItem> get menuItem1 => [
-    MenuItem(AppKey.TODAY, AppConstants.TODAY),
-    MenuItem(AppKey.ALL, AppConstants.ALL_TIME),
+    MenuItem(AppKey.TODAY, t.today),
+    MenuItem(AppKey.ALL, t.all_time),
   ];
 
   static List<MenuItem> get menuItem2 => [
-    MenuItem(AppKey.COMPLETED, AppConstants.COMPLETED),
-    MenuItem(
-      AppKey.IN_COMPLETED,
-      AppConstants.IN_COMPLETED,
-    ),
+    MenuItem(AppKey.COMPLETED, t.completed),
+    MenuItem(AppKey.IN_COMPLETED, t.in_completed),
   ];
 }
-
 
 class MenuItem {
   final String key;

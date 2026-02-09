@@ -50,7 +50,7 @@ class AuthState extends Equatable {
   }
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
     status,
     usernameInput,
     passwordInput,
@@ -58,6 +58,6 @@ class AuthState extends Equatable {
     isValid,
     effect,
     isLoading,
-    ?error
+    error,
   ];
 }

@@ -152,6 +152,12 @@
       "languageVersion": "3.4"
     },
     {
+      "name": "csv",
+      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/csv-6.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "cupertino_icons",
       "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/cupertino_icons-1.0.8",
       "packageUri": "lib/",
@@ -171,7 +177,7 @@
     },
     {
       "name": "dio",
-      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/dio-5.9.0",
+      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/dio-5.9.1",
       "packageUri": "lib/",
       "languageVersion": "2.18"
     },
@@ -236,6 +242,12 @@
       "languageVersion": "3.8"
     },
     {
+      "name": "flutter_localizations",
+      "rootUri": "file:///C:/dev/flutter/packages/flutter_localizations",
+      "packageUri": "lib/",
+      "languageVersion": "3.8"
+    },
+    {
       "name": "flutter_svg",
       "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_svg-2.2.3",
       "packageUri": "lib/",
@@ -291,13 +303,13 @@
     },
     {
       "name": "go_router",
-      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/go_router-17.0.1",
+      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/go_router-17.1.0",
       "packageUri": "lib/",
       "languageVersion": "3.9"
     },
     {
       "name": "google_fonts",
-      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/google_fonts-7.1.0",
+      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/google_fonts-8.0.1",
       "packageUri": "lib/",
       "languageVersion": "3.9"
     },
@@ -309,7 +321,7 @@
     },
     {
       "name": "hooks",
-      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/hooks-1.0.0",
+      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/hooks-1.0.1",
       "packageUri": "lib/",
       "languageVersion": "3.9"
     },
@@ -369,9 +381,9 @@
     },
     {
       "name": "json_annotation",
-      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/json_annotation-4.9.0",
+      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/json_annotation-4.10.0",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "3.9"
     },
     {
       "name": "leak_tracker",
@@ -393,7 +405,7 @@
     },
     {
       "name": "lints",
-      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/lints-6.0.0",
+      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/lints-6.1.0",
       "packageUri": "lib/",
       "languageVersion": "3.8"
     },
@@ -441,7 +453,7 @@
     },
     {
       "name": "objective_c",
-      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/objective_c-9.2.4",
+      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/objective_c-9.3.0",
       "packageUri": "lib/",
       "languageVersion": "3.10"
     },
@@ -620,6 +632,18 @@
       "languageVersion": "3.8"
     },
     {
+      "name": "slang",
+      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/slang-4.12.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
+      "name": "slang_flutter",
+      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/slang_flutter-4.12.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
       "name": "source_gen",
       "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/source_gen-1.5.0",
       "packageUri": "lib/",
@@ -627,7 +651,7 @@
     },
     {
       "name": "source_span",
-      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/source_span-1.10.1",
+      "rootUri": "file:///C:/Users/Admin/AppData/Local/Pub/Cache/hosted/pub.dev/source_span-1.10.2",
       "packageUri": "lib/",
       "languageVersion": "3.1"
     },

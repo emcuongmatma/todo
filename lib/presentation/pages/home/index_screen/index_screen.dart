@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:todo/core/constants/app_constants.dart';
 import 'package:todo/core/constants/initial_data.dart';
 import 'package:todo/core/theme/colors.dart';
 import 'package:todo/domain/entities/task_entity.dart';
 import 'package:todo/generated/assets.dart';
+import 'package:todo/i18n/strings.g.dart';
 import 'package:todo/presentation/cubit/task/task_cubit.dart';
 import 'package:todo/presentation/pages/home/index_screen/component/task_item_widget.dart';
 import 'package:todo/presentation/widgets/custom_text_field.dart';
@@ -35,13 +35,13 @@ class IndexScreen extends StatelessWidget {
                   height: 227,
                 ),
                 Text(
-                  AppConstants.WHAT_DO_YOU_WANT_TO_DO,
+                  t.what_do_you_want_to_do,
                   style: Theme.of(
                     context,
                   ).textTheme.bodyLarge?.copyWith(color: ColorDark.whiteFocus),
                 ),
                 Text(
-                  AppConstants.TAP_TO_ADD_TASK,
+                  t.tap_to_add_task,
                   style: Theme.of(
                     context,
                   ).textTheme.bodyMedium?.copyWith(color: ColorDark.whiteFocus),
@@ -61,7 +61,7 @@ class IndexScreen extends StatelessWidget {
                   CustomTextField(
                     onChange: (value) =>
                         context.read<TaskCubit>().updateFilter(searchKey: value),
-                    hintText: AppConstants.SEARCH_FOR_YOUR_TASK,
+                    hintText: t.search_for_your_task,
                     isSearchBar: true,
                   ),
                   const SizedBox(height: 20),

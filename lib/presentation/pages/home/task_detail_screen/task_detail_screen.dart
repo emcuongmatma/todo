@@ -1,13 +1,15 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:todo/core/constants/app_constants.dart';
+import 'package:todo/core/constants/initial_data.dart';
 import 'package:todo/core/di/injection.dart';
 import 'package:todo/core/theme/colors.dart';
 import 'package:todo/core/utils/toast.dart';
 import 'package:todo/domain/entities/task_entity.dart';
 import 'package:todo/generated/assets.dart';
+import 'package:todo/i18n/strings.g.dart';
 import 'package:todo/presentation/cubit/task_manager/task_manager_cubit.dart';
 import 'package:todo/presentation/pages/home/task_detail_screen/component/task_info_item.dart';
 import 'package:todo/presentation/widgets/custom_calendar_dialog.dart';
@@ -60,6 +62,7 @@ class TaskDetail extends StatelessWidget {
       },
       buildWhen: (pre, cur) => pre.tmpTask != cur.tmpTask,
       builder: (context, state) {
+        final task = state.tmpTask ?? initialTask;
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 11),
           child: Column(
@@ -114,13 +117,13 @@ class TaskDetail extends StatelessWidget {
                       spacing: 15,
                       children: [
                         Text(
-                          (state.tmpTask ?? initialTask).title,
+                          task.title,
                           style: Theme.of(context).textTheme.bodyLarge,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
                         Text(
-                          (state.tmpTask ?? initialTask).description,
+                          task.description,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 3,
                           style: Theme.of(context).textTheme.bodyMedium
@@ -132,15 +135,15 @@ class TaskDetail extends StatelessWidget {
                   InkWell(
                     onTap: () async {
                       context.read<TaskManagerCubit>().preSetValue(
-                        newTaskName: (state.tmpTask ?? initialTask).title,
+                        newTaskName: task.title,
                         newDescription:
-                            (state.tmpTask ?? initialTask).description,
+                        task.description,
                       );
                       bool? isChanged = await showEditTaskNameAndDescription(
                         context: context,
-                        initialTaskName: (state.tmpTask ?? initialTask).title,
+                        initialTaskName: task.title,
                         initialTaskDescription:
-                            (state.tmpTask ?? initialTask).description,
+                        task.description,
                       );
                       if (isChanged == true) {
                         if (!context.mounted) return;
@@ -158,12 +161,12 @@ class TaskDetail extends StatelessWidget {
               ),
               TaskInfoItem(
                 leadingIcon: Assets.iconsIcTimer,
-                title: AppConstants.TASK_TIME,
-                info: (state.tmpTask ?? initialTask).dateTime.toCustomString(),
+                title: t.task_time,
+                info: task.dateTime.toCustomString(),
                 onClick: () async {
                   DateTime? selectedDate = await showAppCalendarDialog(
                     context: context,
-                    initialDate: (state.tmpTask ?? initialTask).dateTime,
+                    initialDate: task.dateTime,
                     mode: CalendarDialogMode.edit,
                   );
                   debugPrint(selectedDate.toString());
@@ -187,15 +190,22 @@ class TaskDetail extends StatelessWidget {
                   );
                 },
               ),
+
               TaskInfoItem(
                 leadingIcon: Assets.iconsIcTag,
-                title: AppConstants.TASK_CATEGORY,
-                info: (state.tmpTask ?? initialTask).category.name,
-                icon: (state.tmpTask ?? initialTask).category.icon,
+                title: t.task_category,
+                info:
+                    InitialData.categories
+                        .firstWhereOrNull(
+                          (element) => element.id == task.category.id,
+                        )
+                        ?.name ??
+                        task.category.name,
+                icon: task.category.icon,
                 onClick: () async {
                   int? categoryId = await showCategoryPicker(
                     context: context,
-                    initialCategory: (state.tmpTask ?? initialTask).category.id,
+                    initialCategory: task.category.id,
                     mode: CategoryPickerDialogMode.edit,
                   );
                   if (categoryId == null) return;
@@ -207,14 +217,14 @@ class TaskDetail extends StatelessWidget {
               ),
               TaskInfoItem(
                 leadingIcon: Assets.iconsIcFlag,
-                title: AppConstants.TASK_PRIORITY,
-                info: (state.tmpTask ?? initialTask).priority == 1
-                    ? AppConstants.DEFAULT
-                    : (state.tmpTask ?? initialTask).priority.toString(),
+                title: t.task_priority,
+                info: task.priority == 1
+                    ? t.kDefault
+                    : task.priority.toString(),
                 onClick: () async {
                   int? priority = await showTaskPriorityDialog(
                     context: context,
-                    initialPriority: (state.tmpTask ?? initialTask).priority,
+                    initialPriority: task.priority,
                     mode: TaskPriorityDialogMode.edit,
                   );
                   if (priority == null) return;
@@ -226,8 +236,8 @@ class TaskDetail extends StatelessWidget {
               ),
               TaskInfoItem(
                 leadingIcon: Assets.iconsIcSubTask,
-                title: AppConstants.SUB_TASK,
-                info: AppConstants.ADD_SUB_TASK,
+                title: t.sub_task,
+                info: t.add_sub_task,
                 onClick: () {},
               ),
               InkWell(
@@ -246,7 +256,7 @@ class TaskDetail extends StatelessWidget {
                     SvgPicture.asset(Assets.iconsIcDelete),
                     const SizedBox(width: 8),
                     Text(
-                      AppConstants.DELETE_TASK,
+                      t.delete_task,
                       style: Theme.of(
                         context,
                       ).textTheme.bodyMedium?.copyWith(color: ColorDark.error),
@@ -264,7 +274,7 @@ class TaskDetail extends StatelessWidget {
                     context.read<TaskManagerCubit>().updateTask();
                   },
                   child: Text(
-                    AppConstants.EDIT_TASK,
+                    t.edit_task,
                     textAlign: TextAlign.center,
                     style: Theme.of(
                       context,

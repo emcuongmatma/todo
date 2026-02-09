@@ -8,6 +8,7 @@
       "version": "1.0.0+1",
       "dependencies": [
         "cached_network_image",
+        "collection",
         "cupertino_icons",
         "dio",
         "equatable",
@@ -27,6 +28,8 @@
         "path_provider",
         "rxdart",
         "shared_preferences",
+        "slang",
+        "slang_flutter",
         "table_calendar"
       ],
       "devDependencies": [
@@ -98,6 +101,31 @@
         "stream_channel",
         "test_api",
         "vector_math"
+      ]
+    },
+    {
+      "name": "collection",
+      "version": "1.19.1",
+      "dependencies": []
+    },
+    {
+      "name": "slang_flutter",
+      "version": "4.12.1",
+      "dependencies": [
+        "flutter",
+        "flutter_localizations",
+        "slang"
+      ]
+    },
+    {
+      "name": "slang",
+      "version": "4.12.1",
+      "dependencies": [
+        "collection",
+        "csv",
+        "intl",
+        "watcher",
+        "yaml"
       ]
     },
     {
@@ -219,7 +247,7 @@
     },
     {
       "name": "dio",
-      "version": "5.9.0",
+      "version": "5.9.1",
       "dependencies": [
         "async",
         "collection",
@@ -250,7 +278,7 @@
     },
     {
       "name": "google_fonts",
-      "version": "7.1.0",
+      "version": "8.0.1",
       "dependencies": [
         "crypto",
         "flutter",
@@ -260,7 +288,7 @@
     },
     {
       "name": "go_router",
-      "version": "17.0.1",
+      "version": "17.1.0",
       "dependencies": [
         "collection",
         "flutter",
@@ -489,11 +517,6 @@
       ]
     },
     {
-      "name": "collection",
-      "version": "1.19.1",
-      "dependencies": []
-    },
-    {
       "name": "code_builder",
       "version": "4.11.1",
       "dependencies": [
@@ -625,7 +648,7 @@
     },
     {
       "name": "lints",
-      "version": "6.0.0",
+      "version": "6.1.0",
       "dependencies": []
     },
     {
@@ -689,6 +712,20 @@
         "string_scanner",
         "term_glyph"
       ]
+    },
+    {
+      "name": "flutter_localizations",
+      "version": "0.0.0",
+      "dependencies": [
+        "flutter",
+        "intl",
+        "path"
+      ]
+    },
+    {
+      "name": "csv",
+      "version": "6.0.0",
+      "dependencies": []
     },
     {
       "name": "shared_preferences_windows",
@@ -990,7 +1027,7 @@
     },
     {
       "name": "source_span",
-      "version": "1.10.1",
+      "version": "1.10.2",
       "dependencies": [
         "collection",
         "path",
@@ -1006,7 +1043,7 @@
     },
     {
       "name": "json_annotation",
-      "version": "4.9.0",
+      "version": "4.10.0",
       "dependencies": [
         "meta"
       ]
@@ -1119,7 +1156,7 @@
     },
     {
       "name": "objective_c",
-      "version": "9.2.4",
+      "version": "9.3.0",
       "dependencies": [
         "code_assets",
         "collection",
@@ -1206,7 +1243,7 @@
     },
     {
       "name": "hooks",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "dependencies": [
         "collection",
         "crypto",

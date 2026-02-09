@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:todo/core/constants/app_constants.dart';
 import 'package:todo/core/error/exception.dart';
 import 'package:todo/core/error/failure.dart';
+import 'package:todo/i18n/strings.g.dart';
 
 class AuthRemoteDataSource {
   final Dio _dio;
@@ -17,7 +18,7 @@ class AuthRemoteDataSource {
       return response.data;
     } on DioException catch (e) {
       if (e.response?.statusCode == 404) {
-        throw const AuthFailure(AppConstants.WRONG_USERNAME_OR_PASSWORD);
+        throw AuthFailure(t.error_wrong_credentials);
       }
       throw mapDioError(e);
     } catch (e) {

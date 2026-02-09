@@ -3,13 +3,13 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:todo/core/constants/app_constants.dart';
 import 'package:todo/core/constants/key.dart';
 import 'package:todo/core/error/failure.dart';
 import 'package:todo/data/datasources/local/auth_local_data_source.dart';
 import 'package:todo/data/datasources/remote/auth_remote_data_source.dart';
 import 'package:todo/domain/entities/user_entity.dart';
 import 'package:todo/domain/repositories/auth_repository.dart';
+import 'package:todo/i18n/strings.g.dart';
 import 'package:todo/presentation/cubit/auth/auth_cubit.dart';
 
 class AuthRepositoryImpl extends AuthRepository {
@@ -46,7 +46,7 @@ class AuthRepositoryImpl extends AuthRepository {
       final userData = userDataList.first;
       if (userData.isEmpty) {
         return TaskEither.left(
-          const AuthFailure(AppConstants.USERNAME_NOT_FOUND),
+          AuthFailure(t.error_username_not_found),
         );
       }
       debugPrint("loaded data");
@@ -64,7 +64,7 @@ class AuthRepositoryImpl extends AuthRepository {
       } else {
         _controller.add(AuthenticationStatus.unauthenticated);
         return TaskEither.left(
-          const AuthFailure(AppConstants.WRONG_USERNAME_OR_PASSWORD),
+          AuthFailure(t.error_wrong_credentials),
         );
       }
     });

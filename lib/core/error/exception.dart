@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:todo/core/constants/app_constants.dart';
+import 'package:todo/i18n/strings.g.dart';
 
 class ApiException implements Exception {
   final String message;
@@ -15,15 +15,15 @@ class ApiException implements Exception {
 ApiException mapDioError(DioException e) {
   switch (e.type) {
     case DioExceptionType.connectionTimeout:
-      return ApiException(AppConstants.TIME_OUT);
+      return ApiException(t.error_time_out);
     case DioExceptionType.receiveTimeout:
-      return ApiException(AppConstants.NOT_RESPONSE);
+      return ApiException(t.error_no_response);
     case DioExceptionType.badResponse:
       return ApiException(
         e.response?.data['message'],
         statusCode: e.response?.statusCode,
       );
     default:
-      return ApiException(AppConstants.NETWORK_ERROR);
+      return ApiException(t.error_network);
   }
 }

@@ -1,5 +1,5 @@
 import 'package:formz/formz.dart';
-import 'package:todo/core/constants/app_constants.dart';
+import 'package:todo/i18n/strings.g.dart';
 
 enum NormalInputValidatorError { empty, wrong, notMatch }
 
@@ -30,11 +30,11 @@ extension NormalInputX on NormalInput {
     if (isPure) return null;
     switch (error) {
       case NormalInputValidatorError.empty:
-        return AppConstants.REQUIRED;
+        return t.required;
       case NormalInputValidatorError.wrong:
-        return AppConstants.WRONG_USERNAME_OR_PASSWORD;
+        return t.error_wrong_credentials;
       case NormalInputValidatorError.notMatch:
-        return AppConstants.PASSWORD_NOT_MATCH;
+        return t.error_password_not_match;
       default:
         return null;
     }

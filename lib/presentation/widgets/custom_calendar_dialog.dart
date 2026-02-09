@@ -3,9 +3,9 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:todo/core/constants/app_constants.dart';
 import 'package:todo/core/theme/colors.dart';
 import 'package:todo/generated/assets.dart';
+import 'package:todo/i18n/strings.g.dart';
 
 class CustomCalendar extends StatefulWidget {
   final DateTime? initialDate;
@@ -65,8 +65,12 @@ class _CustomCalendarState extends State<CustomCalendar> {
           );
         },
         headerTitleBuilder: (context, day) {
-          final month = DateFormat.MMMM().format(day).toUpperCase();
-          final year = DateFormat.y().format(day);
+          final month = DateFormat.MMMM(
+            LocaleSettings.currentLocale.languageCode,
+          ).format(day).toUpperCase();
+          final year = DateFormat.y(
+            LocaleSettings.currentLocale.languageCode,
+          ).format(day);
           return Column(
             children: [
               Text(
@@ -120,7 +124,7 @@ class _CustomCalendarState extends State<CustomCalendar> {
         weekdayStyle: const TextStyle(color: ColorDark.whiteFocus),
         weekendStyle: const TextStyle(color: ColorDark.error),
         dowTextFormatter: (date, locale) {
-          final text = DateFormat.E(locale).format(date);
+          final text = DateFormat.E(LocaleSettings.currentLocale.languageCode).format(date);
           return text.toUpperCase();
         },
       ),
@@ -160,7 +164,7 @@ enum CalendarDialogMode { create, edit }
 Future<DateTime?> showAppCalendarDialog({
   required BuildContext context,
   required DateTime initialDate,
-  CalendarDialogMode mode = CalendarDialogMode.create
+  CalendarDialogMode mode = CalendarDialogMode.create,
 }) {
   return showDialog<DateTime>(
     context: context,
@@ -189,7 +193,7 @@ Future<DateTime?> showAppCalendarDialog({
                     child: TextButton(
                       onPressed: () => context.pop(),
                       child: Text(
-                        AppConstants.CANCEL,
+                        t.cancel,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: ColorDark.primary,
                         ),
@@ -201,7 +205,9 @@ Future<DateTime?> showAppCalendarDialog({
                       style: Theme.of(context).elevatedButtonTheme.style,
                       onPressed: () => context.pop(tempSelectedDate),
                       child: Text(
-                        mode == CalendarDialogMode.create ? AppConstants.CHOOSE_TIME : AppConstants.EDIT_TIME,
+                        mode == CalendarDialogMode.create
+                            ? t.choose_time
+                            : t.edit_time,
                         textAlign: TextAlign.center,
                         style: Theme.of(
                           context,

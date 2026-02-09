@@ -111,7 +111,7 @@ class TaskRepositoryImpl implements TaskRepository {
 
   @override
   TaskEither<Failure, TaskModel> updateTask(TaskEntity? task, int userId) {
-    if (task == null) return TaskEither.left(const UnknownFailure());
+    if (task == null) return TaskEither.left(UnknownFailure());
     final taskModel = TaskModel.fromEntity(task, userId)..isSynced = false;
     return TaskEither<Failure, TaskModel>.tryCatch(
       //update task local

@@ -1,4 +1,4 @@
-import 'package:todo/core/constants/app_constants.dart';
+import 'package:todo/i18n/strings.g.dart';
 
 abstract class Failure {
   final String message;
@@ -22,5 +22,5 @@ class DatabaseFailure extends Failure {
 }
 
 class UnknownFailure extends Failure {
-  const UnknownFailure() : super(AppConstants.UNDEFINED);
+  UnknownFailure() : super(t.undefined);
 }

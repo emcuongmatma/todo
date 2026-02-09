@@ -1,11 +1,12 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:todo/core/constants/app_constants.dart';
 import 'package:todo/core/constants/initial_data.dart';
 import 'package:todo/core/theme/colors.dart';
 import 'package:todo/domain/entities/category_entity.dart';
+import 'package:todo/i18n/strings.g.dart';
 import 'package:todo/presentation/cubit/category/category_cubit.dart';
 
 class CategoryPicker extends StatefulWidget {
@@ -42,7 +43,7 @@ class _CategoryPickerState extends State<CategoryPicker> {
         crossAxisCount: 3,
         mainAxisSpacing: 16,
         crossAxisSpacing: 16,
-        childAspectRatio: 0.9,
+        childAspectRatio: 0.85,
       ),
       itemCount: categories.length + 1,
       itemBuilder: (context, index) {
@@ -102,7 +103,13 @@ class CategoryItem extends StatelessWidget {
             child: SvgPicture.asset(item.icon),
           ),
         ),
-        Text(item.name, style: Theme.of(context).textTheme.titleSmall),
+        Text(
+          InitialData.categories
+                  .firstWhereOrNull((element) => element.id == item.id)
+                  ?.name ??
+              item.name,
+          style: Theme.of(context).textTheme.titleSmall,
+        ),
       ],
     );
   }
@@ -127,7 +134,7 @@ Future<int?> showCategoryPicker({
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                AppConstants.CHOOSE_CATEGORY,
+                t.choose_category,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 10),
@@ -156,7 +163,7 @@ Future<int?> showCategoryPicker({
                         if (context.canPop()) context.pop();
                       },
                       child: Text(
-                        AppConstants.CANCEL,
+                        t.cancel,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: ColorDark.primary,
                         ),
@@ -171,8 +178,8 @@ Future<int?> showCategoryPicker({
                       },
                       child: Text(
                         mode == CategoryPickerDialogMode.create
-                            ? AppConstants.CHOOSE_CATEGORY
-                            : AppConstants.EDIT,
+                            ? t.choose_category
+                            : t.edit_time,
                         textAlign: TextAlign.center,
                         style: Theme.of(
                           context,

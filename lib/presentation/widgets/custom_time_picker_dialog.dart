@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:todo/core/constants/app_constants.dart';
 import 'package:todo/core/theme/colors.dart';
+import 'package:todo/i18n/strings.g.dart';
 
 class TimeWheelPicker extends StatefulWidget {
   final int initialHour;
@@ -138,7 +138,7 @@ Future<TimeOfDay?> showCustomTimePicker({
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                AppConstants.CHOOSE_TIME,
+                t.choose_time,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 10),
@@ -175,7 +175,7 @@ Future<TimeOfDay?> showCustomTimePicker({
                         if (context.canPop()) context.pop();
                       },
                       child: Text(
-                        AppConstants.CANCEL,
+                        t.cancel,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: ColorDark.primary,
                         ),
@@ -207,8 +207,8 @@ Future<TimeOfDay?> showCustomTimePicker({
                       },
                       child: Text(
                         mode == TimePickerDialogMode.create
-                            ? AppConstants.SAVE
-                            : AppConstants.EDIT,
+                            ? t.save
+                            : t.edit,
                         textAlign: TextAlign.center,
                         style: Theme.of(
                           context,

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:todo/core/constants/app_constants.dart';
 import 'package:todo/core/theme/colors.dart';
+import 'package:todo/i18n/strings.g.dart';
 import 'package:todo/presentation/cubit/task_manager/task_manager_cubit.dart';
 import 'package:todo/presentation/models/normal_input.dart';
 import 'package:todo/presentation/widgets/custom_text_field.dart';
@@ -26,7 +26,7 @@ Future<bool?> showEditTaskNameAndDescription({
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  AppConstants.TASK_PRIORITY,
+                  t.task_priority,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 const SizedBox(height: 10),
@@ -55,7 +55,7 @@ Future<bool?> showEditTaskNameAndDescription({
                           if (context.canPop()) context.pop();
                         },
                         child: Text(
-                          AppConstants.CANCEL,
+                          t.cancel,
                           style: Theme.of(context).textTheme.bodyMedium
                               ?.copyWith(color: ColorDark.primary),
                         ),
@@ -70,7 +70,7 @@ Future<bool?> showEditTaskNameAndDescription({
                           }
                         },
                         child: Text(
-                          AppConstants.EDIT,
+                          t.edit,
                           textAlign: TextAlign.center,
                           style: Theme.of(
                             context,
@@ -150,7 +150,7 @@ class _TaskInputSectionState extends State<TaskInputSection> {
                 focusNode: widget.taskNameFocus,
                 onChange: (value) =>
                     context.read<TaskManagerCubit>().onTaskNameChange(value),
-                hintText: AppConstants.TASK_NAME,
+                hintText: t.task_name,
                 errorText: state.taskNameInput.inputStatusText,
               )
             : InkWell(
@@ -159,7 +159,7 @@ class _TaskInputSectionState extends State<TaskInputSection> {
                 child: Text(
                   state.taskName.isNotEmpty
                       ? state.taskName
-                      : AppConstants.TASK_TITLE,
+                      : t.task_title,
                   textAlign: TextAlign.start,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     fontSize: 18,
@@ -174,7 +174,7 @@ class _TaskInputSectionState extends State<TaskInputSection> {
                 child: Text(
                   state.taskDes.isNotEmpty
                       ? state.taskDes
-                      : AppConstants.DESCRIPTION,
+                      : t.description,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     fontSize: 18,
                     color: ColorDark.whiteFocus,
@@ -187,7 +187,7 @@ class _TaskInputSectionState extends State<TaskInputSection> {
                 onChange: (value) => context
                     .read<TaskManagerCubit>()
                     .onTaskDescriptionChange(value),
-                hintText: AppConstants.TASK_DESCRIPTION,
+                hintText: t.task_description,
                 errorText: state.taskDesInput.inputStatusText,
               ),
       ],

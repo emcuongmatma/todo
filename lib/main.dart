@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:todo/core/constants/app_constants.dart';
 import 'package:todo/core/router/app_router.dart';
 import 'package:todo/core/di/injection.dart' as di;
 import 'package:todo/core/theme/theme.dart';
+import 'package:todo/i18n/strings.g.dart';
 import 'package:todo/presentation/cubit/auth/auth_cubit.dart';
 import 'package:todo/presentation/cubit/category/category_cubit.dart';
 import 'package:todo/presentation/cubit/task/task_cubit.dart';
@@ -12,7 +12,10 @@ import 'package:todo/presentation/cubit/task/task_cubit.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await di.init();
-  initializeDateFormatting().then((_) => runApp(const MyApp()));
+  LocaleSettings.useDeviceLocale();
+  initializeDateFormatting().then(
+    (_) => runApp(TranslationProvider(child: const MyApp())),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -29,7 +32,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => di.sl<TaskCubit>()),
       ],
       child: MaterialApp.router(
-        title: AppConstants.APP_NAME,
+        title: t.app_name,
         debugShowCheckedModeBanner: false,
         theme: appTheme,
         routerConfig: _router,

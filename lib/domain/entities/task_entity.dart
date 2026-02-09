@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
-import 'package:todo/core/constants/app_constants.dart';
 import 'package:todo/domain/entities/category_entity.dart';
+import 'package:todo/i18n/strings.g.dart';
 
 class TaskEntity {
   final int? id;
@@ -56,9 +56,9 @@ extension DateTimeEx on DateTime {
     ).difference(DateTime(year, month, day)).inDays;
 
     return switch (diff) {
-      0 => '${AppConstants.TODAY} ${AppConstants.AT} $time',
-      1 => '${AppConstants.YESTERDAY} ${AppConstants.AT} $time',
-      _ => '${DateFormat.MMMd().format(this)} ${AppConstants.AT} $time',
+      0 => '${t.today} ${t.at} $time',
+      1 => '${t.yesterday} ${t.at} $time',
+      _ => '${DateFormat.MMMd(LocaleSettings.currentLocale.languageCode).format(this)} ${t.at} $time',
     };
   }
 }

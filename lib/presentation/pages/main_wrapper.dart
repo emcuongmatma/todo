@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:todo/core/constants/app_constants.dart';
 import 'package:todo/core/theme/colors.dart';
 import 'package:todo/generated/assets.dart';
+import 'package:todo/i18n/strings.g.dart';
 import 'package:todo/presentation/widgets/add_task_bottom_sheet.dart';
 
 class MainWrapper extends StatelessWidget {
@@ -25,11 +26,11 @@ class MainWrapper extends StatelessWidget {
         ),
         title: Text(
           switch(navigationShell.currentIndex) {
-            0 => AppConstants.INDEX,
-            1 => AppConstants.CALENDAR,
-            2 => AppConstants.FOCUSE,
-            3 => AppConstants.PROFILE,
-            _ => AppConstants.UNDEFINED,
+            0 => t.index,
+            1 => t.calendar,
+            2 => t.focuse,
+            3 => t.profile,
+            _ => t.undefined,
           },
           style: Theme.of(
             context,
@@ -82,26 +83,26 @@ class MainWrapper extends StatelessWidget {
           children: <Widget>[
             BottomNavigationBarItem(
               icon: Assets.iconsIcHome,
-              label: AppConstants.INDEX,
+              label: t.index,
               index: 0,
               navigationShell: navigationShell,
             ),
             BottomNavigationBarItem(
               icon: Assets.iconsIcCalendar,
-              label: AppConstants.CALENDAR,
+              label: t.calendar,
               index: 1,
               navigationShell: navigationShell,
             ),
             const SizedBox(width: 40),
             BottomNavigationBarItem(
               icon: Assets.iconsIcFocuse,
-              label: AppConstants.FOCUSE,
+              label: t.focuse,
               index: 2,
               navigationShell: navigationShell,
             ),
             BottomNavigationBarItem(
               icon: Assets.iconsIcProfile,
-              label: AppConstants.PROFILE,
+              label: t.profile,
               index: 3,
               navigationShell: navigationShell,
             ),

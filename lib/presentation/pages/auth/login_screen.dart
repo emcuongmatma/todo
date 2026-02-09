@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:todo/core/constants/app_constants.dart';
 import 'package:todo/core/constants/routes.dart';
 import 'package:todo/core/utils/toast.dart';
+import 'package:todo/i18n/strings.g.dart';
 import 'package:todo/presentation/cubit/auth/auth_cubit.dart';
 import 'package:todo/presentation/cubit/task/task_cubit.dart';
 import 'package:todo/presentation/models/normal_input.dart';
@@ -48,12 +48,12 @@ class LoginScreen extends StatelessWidget {
                   children: [
                     const SizedBox(height: 78),
                     Text(
-                      AppConstants.LOGIN,
+                      t.login,
                       style: Theme.of(context).textTheme.headlineLarge,
                     ),
                     const SizedBox(height: 53),
                     Text(
-                      AppConstants.USERNAME,
+                      t.username,
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     const SizedBox(height: 8),
@@ -64,12 +64,12 @@ class LoginScreen extends StatelessWidget {
                           validConfirmPassword: false,
                         ),
                       },
-                      hintText: AppConstants.ENTER_YOUR_USERNAME,
+                      hintText: t.enter_your_username,
                       errorText: state.usernameInput.inputStatusText,
                     ),
                     const SizedBox(height: 25),
                     Text(
-                      AppConstants.PASSWORD,
+                      t.password,
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     const SizedBox(height: 8),
@@ -80,7 +80,7 @@ class LoginScreen extends StatelessWidget {
                           validConfirmPassword: false,
                         ),
                       },
-                      hintText: AppConstants.ENTER_YOUR_PASSWORD,
+                      hintText: t.enter_your_password,
                       isPasswordTextField: true,
                       errorText: state.passwordInput.inputStatusText,
                     ),
@@ -94,7 +94,7 @@ class LoginScreen extends StatelessWidget {
                               }
                             : null,
                         child: Text(
-                          AppConstants.LOGIN,
+                          t.login,
                           textAlign: TextAlign.center,
                           style: Theme.of(
                             context,
@@ -106,8 +106,8 @@ class LoginScreen extends StatelessWidget {
                     Align(
                       alignment: AlignmentGeometry.bottomCenter,
                       child: TextSpanWithAction(
-                        text1: AppConstants.DONT_HAVE_ACCOUNT,
-                        text2: AppConstants.REGISTER,
+                        text1: t.dont_have_account,
+                        text2: t.register,
                         onAction: () {
                           context.read<AuthCubit>().resetInputState();
                           context.pushNamed(AppRouteName.SIGNUP_ROUTE_NAME);

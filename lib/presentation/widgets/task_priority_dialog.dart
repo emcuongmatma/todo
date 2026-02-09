@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:todo/core/constants/app_constants.dart';
 import 'package:todo/core/theme/colors.dart';
 import 'package:todo/generated/assets.dart';
+import 'package:todo/i18n/strings.g.dart';
 
 enum TaskPriorityDialogMode { create, edit }
 
@@ -24,7 +24,7 @@ Future<int?> showTaskPriorityDialog({
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                AppConstants.TASK_PRIORITY,
+                t.task_priority,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 10),
@@ -52,7 +52,7 @@ Future<int?> showTaskPriorityDialog({
                         if (context.canPop()) context.pop();
                       },
                       child: Text(
-                        AppConstants.CANCEL,
+                        t.cancel,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: ColorDark.primary,
                         ),
@@ -67,8 +67,8 @@ Future<int?> showTaskPriorityDialog({
                       },
                       child: Text(
                         mode == TaskPriorityDialogMode.create
-                            ? AppConstants.SAVE
-                            : AppConstants.EDIT,
+                            ? t.save
+                            : t.edit,
                         textAlign: TextAlign.center,
                         style: Theme.of(
                           context,
