@@ -68,5 +68,7 @@
     "health": "Sức khỏe",
     "movie": "Xem phim",
     "home": "Nhà cửa"
-  }
+  },
+  "id": "ID: $id",
+  "showUsername": "@$username"
 }

@@ -68,5 +68,7 @@
     "health": "Health",
     "movie": "Movie",
     "home": "Home"
-  }
+  },
+  "id": "ID: $id",
+  "showUsername": "@$username"
 }

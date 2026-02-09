@@ -128,9 +128,9 @@ class TaskManagerCubit extends Cubit<TaskManagerState> {
   }
 
   Future<void> updateTask() async {
-    final userId = authRepository.getUserId();
-    if (userId == null) return;
-    final result = await taskRepository.updateTask(state.tmpTask, userId).run();
+    final user = await authRepository.getUserData();
+    if (user == null) return;
+    final result = await taskRepository.updateTask(state.tmpTask, int.parse(user.id)).run();
     result.fold(
       (failure) =>
           emit(state.copyWith(effect: TaskManagerEffect.fail, error: failure)),
@@ -207,9 +207,9 @@ class TaskManagerCubit extends Cubit<TaskManagerState> {
       priority: state.priority,
       category: category,
     );
-    final userId = authRepository.getUserId();
-    if (userId == null) return;
-    final result = await taskRepository.addTask(newTask, userId).run();
+    final user = await authRepository.getUserData();
+    if (user == null) return;
+    final result = await taskRepository.addTask(newTask, int.parse(user.id)).run();
     result.fold(
       (failure) =>
           emit(state.copyWith(effect: TaskManagerEffect.fail, error: failure)),

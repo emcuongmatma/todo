@@ -10,4 +10,10 @@ class AppKey{
   static const String USER_AVATAR = "avatarUrl";
   static const String USERNAME = "username";
   static const String PASSWORD = "password";
+  static const String TITLE = "title";
+  static const String DESCRIPTION = "description";
+  static const String DATETIME = "dateTime";
+  static const String PRIORITY = "priority";
+  static const String CATEGORY_ID = "categoryId";
+  static const String IS_COMPLETED = "isCompleted";
 }

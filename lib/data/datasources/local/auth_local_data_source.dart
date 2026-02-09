@@ -1,28 +1,25 @@
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:todo/core/constants/key.dart';
+import 'package:isar/isar.dart';
+import 'package:todo/data/models/user_model.dart';
 
 class AuthLocalDataSource {
-  final SharedPreferences _prefs;
-  AuthLocalDataSource(this._prefs);
+  final Isar _isar;
 
-  static const String _userIdKey = AppKey.USER_ID;
-  static const String _userAvtKey = AppKey.USER_AVATAR;
+  AuthLocalDataSource({required Isar isar})
+    :_isar = isar;
 
-  Future<void> saveUserData(int userId,String userAvtUrl) async {
-    await _prefs.setInt(_userIdKey, userId);
-    await _prefs.setString(_userAvtKey, userAvtUrl);
+  Future<void> saveUserData(
+    int userId,
+    String userAvtUrl,
+    UserModel user,
+  ) async {
+    await _isar.writeTxn(() => _isar.userModels.put(user));
   }
 
-  int? getUserId() {
-    return _prefs.getInt(_userIdKey);
-  }
-
-  String? getUserAvtUrl() {
-    return _prefs.getString(_userAvtKey);
+  Future<UserModel?> getUserData() async {
+    return await _isar.userModels.where().findFirst();
   }
 
   Future<void> clearSession() async {
-    await _prefs.remove(_userIdKey);
-    await _prefs.remove(_userAvtKey);
+    await _isar.userModels.clear();
   }
 }

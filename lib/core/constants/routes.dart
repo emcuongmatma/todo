@@ -1,4 +1,5 @@
 class AppRouteName {
+  static const String SPLASH_ROUTE_NAME = 'splash';
   static const String LOGIN_ROUTE_NAME = 'login';
   static const String SIGNUP_ROUTE_NAME = 'signup';
   static const String HOME_ROUTE_NAME = "home";
@@ -10,6 +11,7 @@ class AppRouteName {
 }
 
 class AppRoutePath {
+  static const String SPLASH_ROUTE_PATH = '/splash';
   static const String LOGIN_ROUTE_PATH = '/login';
   static const String SIGNUP_ROUTE_PATH = '/signup';
   static const String HOME_ROUTE_PATH = "/home";

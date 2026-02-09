@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:todo/core/constants/key.dart';
 import 'package:todo/core/error/failure.dart';
+import 'package:todo/domain/entities/user_entity.dart';
 import 'package:todo/domain/repositories/auth_repository.dart';
 import 'package:todo/presentation/models/normal_input.dart';
 
@@ -14,7 +15,21 @@ class AuthCubit extends Cubit<AuthState> {
   StreamSubscription? _getAuthStatus;
 
   AuthCubit({required this.authRepository})
-    : super(AuthState(status: authRepository.getInitialStatus())) {
+    : super(const AuthState(status: AuthenticationStatus.unknown)) {
+    init();
+  }
+
+  Future<void> init() async {
+    final userData = await authRepository.getUserData();
+    await Future.delayed(const Duration(milliseconds: 500));
+    emit(
+      state.copyWith(
+        status: userData == null
+            ? AuthenticationStatus.unauthenticated
+            : AuthenticationStatus.authenticated,
+        userEntity: userData,
+      ),
+    );
     _getAuthStatus = authRepository.status.listen(
       (status) {
         emit(state.copyWith(status: status));
@@ -134,6 +149,7 @@ class AuthCubit extends Cubit<AuthState> {
           status: AuthenticationStatus.authenticated,
           effect: AuthScreenEffect.success,
           isLoading: false,
+          userEntity: user,
         ),
       ),
     );

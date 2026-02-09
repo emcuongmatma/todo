@@ -15,6 +15,7 @@ import 'package:todo/presentation/pages/home/index_screen/index_screen.dart';
 import 'package:todo/presentation/pages/home/profile_screen.dart';
 import 'package:todo/presentation/pages/home/task_detail_screen/task_detail_screen.dart';
 import 'package:todo/presentation/pages/main_wrapper.dart';
+import 'package:todo/presentation/pages/splash/splash_screen.dart';
 
 class AppRouter {
   static final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -27,16 +28,30 @@ class AppRouter {
         return prev.status == curr.status;
       }),
     ),
-    initialLocation: AppRoutePath.HOME_ROUTE_PATH,
+    initialLocation: AppRoutePath.SPLASH_ROUTE_PATH,
     redirect: (context, state) {
       final authState = context.read<AuthCubit>().state;
-      final bool loggedIn =
-          authState.status == AuthenticationStatus.authenticated;
-      final bool loggingIn =
-          state.matchedLocation == AppRoutePath.LOGIN_ROUTE_PATH ||
-          state.matchedLocation == AppRoutePath.SIGNUP_ROUTE_PATH;
-      if (loggedIn && loggingIn) return AppRoutePath.HOME_ROUTE_PATH;
-      if (!loggedIn && !loggingIn) return AppRoutePath.LOGIN_ROUTE_PATH;
+      final status = authState.status;
+
+      if (status == AuthenticationStatus.unknown) {
+        return AppRoutePath.SPLASH_ROUTE_PATH;
+      }
+
+      final bool loggedIn = status == AuthenticationStatus.authenticated;
+      final String location = state.matchedLocation;
+
+      final bool isAuthPage = location == AppRoutePath.LOGIN_ROUTE_PATH ||
+          location == AppRoutePath.SIGNUP_ROUTE_PATH;
+      final bool isSplashPage = location == AppRoutePath.SPLASH_ROUTE_PATH;
+
+      if (loggedIn) {
+        if (isAuthPage || isSplashPage) return AppRoutePath.HOME_ROUTE_PATH;
+      }
+
+      else {
+        if (!isAuthPage) return AppRoutePath.LOGIN_ROUTE_PATH;
+      }
+
       return null;
     },
     routes: [
@@ -113,6 +128,13 @@ class AppRouter {
         parentNavigatorKey: _rootNavigatorKey,
         pageBuilder: (BuildContext context, GoRouterState state) =>
             AppTransitionPage(child: const SignUpScreen(), key: state.pageKey),
+      ),
+      GoRoute(
+        name: AppRouteName.SPLASH_ROUTE_NAME,
+        path: AppRoutePath.SPLASH_ROUTE_PATH,
+        parentNavigatorKey: _rootNavigatorKey,
+        pageBuilder: (BuildContext context, GoRouterState state) =>
+            AppTransitionPage(child: const SplashScreen(), key: state.pageKey),
       ),
     ],
   );

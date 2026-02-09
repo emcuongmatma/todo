@@ -6,6 +6,7 @@ enum AuthScreenEffect { none, error, success }
 
 class AuthState extends Equatable {
   final AuthenticationStatus status;
+  final UserEntity? userEntity;
   final NormalInput usernameInput;
   final NormalInput passwordInput;
   final NormalInput confirmPasswordInput;
@@ -22,7 +23,8 @@ class AuthState extends Equatable {
     this.effect = AuthScreenEffect.none,
     this.confirmPasswordInput = const NormalInput.pure(),
     this.isLoading = false,
-    this.error
+    this.error,
+    this.userEntity,
   });
 
   AuthState copyWith({
@@ -35,7 +37,8 @@ class AuthState extends Equatable {
     NormalInput? confirmPasswordInput,
     AuthScreenEffect? effect,
     bool? isLoading,
-    Failure? error
+    Failure? error,
+    UserEntity? userEntity,
   }) {
     return AuthState(
       status: status ?? this.status,
@@ -45,7 +48,8 @@ class AuthState extends Equatable {
       confirmPasswordInput: confirmPasswordInput ?? this.confirmPasswordInput,
       effect: effect ?? this.effect,
       isLoading: isLoading ?? this.isLoading,
-      error: error ?? this.error
+      error: error ?? this.error,
+      userEntity: userEntity ?? this.userEntity,
     );
   }
 
@@ -59,5 +63,6 @@ class AuthState extends Equatable {
     effect,
     isLoading,
     error,
+    userEntity
   ];
 }

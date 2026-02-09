@@ -8,7 +8,9 @@ part 'category_state.dart';
 class CategoryCubit extends Cubit<CategoryState> {
   final CategoryRepository _categoryRepo;
 
-  CategoryCubit(this._categoryRepo) : super(const CategoryState());
+  CategoryCubit(this._categoryRepo) : super(const CategoryState()) {
+    getAllCategory();
+  }
 
   void getAllCategory() async {
     if (state.categories.isNotEmpty) return;
@@ -17,7 +19,9 @@ class CategoryCubit extends Cubit<CategoryState> {
   }
 
   Future<CategoryEntity> getCategoryById(int id) async {
-    if (state.categories.isNotEmpty) return state.categories.where((cat) => cat.id == id).first;
+    if (state.categories.isNotEmpty) {
+      return state.categories.where((cat) => cat.id == id).first;
+    }
     await _categoryRepo.getAllCategory();
     return state.categories.where((cat) => cat.id == id).first;
   }

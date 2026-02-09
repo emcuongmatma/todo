@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:isar/isar.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo/core/database/isar_service.dart';
 import 'package:todo/core/network/dio_client.dart';
 import 'package:todo/data/datasources/local/auth_local_data_source.dart';
@@ -24,7 +23,6 @@ final sl = GetIt.instance;
 
 Future<void> init() async {
   final isar = await IsarService.init();
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
   //
   sl.registerSingleton<Isar>(isar);
   //Dio
@@ -33,7 +31,7 @@ Future<void> init() async {
   );
   //datasource
   sl.registerLazySingleton<AuthLocalDataSource>(
-    () => AuthLocalDataSource(prefs),
+    () => AuthLocalDataSource(isar: isar),
   );
   sl.registerLazySingleton<AuthRemoteDataSource>(
     () => AuthRemoteDataSource(sl<Dio>()),

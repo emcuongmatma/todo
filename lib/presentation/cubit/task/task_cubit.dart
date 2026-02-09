@@ -104,11 +104,11 @@ class TaskCubit extends Cubit<TaskState> {
     };
   }
 
-  void syncTasksFromServer() {
+  Future<void> syncTasksFromServer() async {
     debugPrint("sync task");
-    final userId = _authRepository.getUserId();
-    if (userId == null) return;
-    _repository.syncTasks(userId).run();
+    final user = await _authRepository.getUserData();
+    if (user == null) return;
+    _repository.syncTasks(int.parse(user.id)).run();
   }
 
   @override
